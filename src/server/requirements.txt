@@ -1,7 +1,7 @@
-fastapi==0.136.1
-pydantic==2.13.4
+fastapi==0.162.0
+pydantic==2.14.2
 result==0.17.0
-uvicorn==0.46.0
-websockets==16.1.1
-volsegtools==0.2.4
+uvicorn==0.54.0
+websockets==17.4
+volsegtools==0.3.1
 appdirs==1.4.4
