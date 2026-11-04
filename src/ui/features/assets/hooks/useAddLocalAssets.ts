@@ -109,9 +109,12 @@ export function useAddLocalAssets() {
                         file,
                         result.type === "Segmentation" ? "Segmentation" : "Volume",
                         {
-                            downsampling_strategy: getPerFormatProcessingSettings(
+                            volume_downsampling_strategy: getPerFormatProcessingSettings(
                                 file.extension,
                             ).exportProcessing.downsamplingStrategy,
+                            segmentation_downsampling_strategy:
+                                getPerFormatProcessingSettings(file.extension)
+                                    .exportProcessing.downsamplingStrategy, // TODO: based on format too
                             volume_serializer: "mrc",
                             segmentation_mask_serializer: "mrc",
                             segmentation_volume_serializer: "mrc",

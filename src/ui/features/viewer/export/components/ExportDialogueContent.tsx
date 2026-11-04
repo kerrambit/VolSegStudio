@@ -709,7 +709,10 @@ export function ExportDialogueContent({
                     onClick={() => {
                         close({
                             properties: {
-                                downsampling_strategy: effectiveDownsamplingStrategy,
+                                volume_downsampling_strategy:
+                                    effectiveDownsamplingStrategy,
+                                segmentation_downsampling_strategy:
+                                    effectiveDownsamplingStrategy, // TODO: make for this also the settings select as for volume
                                 volume_serializer: "mrc" as SerializerKind,
                                 segmentation_mask_serializer: "mrc" as SerializerKind,
                                 segmentation_volume_serializer: "mrc" as SerializerKind,

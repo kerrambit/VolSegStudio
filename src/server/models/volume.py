@@ -45,8 +45,9 @@ class ProcessVolumeRequest(BaseModel):
     temporary_directory: str
     volume_filepaths: List[str]
     segmentations_filepaths: List[str]
-    downsampling_strategy: DownsamplignAlgorithmKind
+    volume_downsampling_strategy: DownsamplignAlgorithmKind
     volume_serializer: SerializerKind
+    segmentation_downsampling_strategy: DownsamplignAlgorithmKind
     segmentation_mask_serializer: SerializerKind
     segmentation_volume_serializer: SerializerKind
     segmentation_mesh_serializer: SerializerKind

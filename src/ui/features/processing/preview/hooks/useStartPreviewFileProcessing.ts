@@ -42,7 +42,9 @@ export function useStartPreviewFileProcessing() {
                 file,
                 assetType,
                 {
-                    downsampling_strategy: previewSettings.downsamplingStrategy,
+                    volume_downsampling_strategy: previewSettings.downsamplingStrategy,
+                    segmentation_downsampling_strategy:
+                        previewSettings.downsamplingStrategy, // TODO: based on format too
                     volume_serializer: "mrc",
                     segmentation_mask_serializer: "mrc",
                     segmentation_volume_serializer: "mrc",

@@ -75,8 +75,9 @@ class Preprocessor:
         job: ProcessVolumeJob,
         temporary_directory: str,
         volume_filepaths: List[str],
-        downsampling_strategy: DownsamplignAlgorithmKind,
+        volume_downsampling_strategy: DownsamplignAlgorithmKind,
         volume_serializer: SerializerKind,
+        segmentation_downsampling_strategy: DownsamplignAlgorithmKind,
         segmentations_filepaths: List[str],
         segmentation_mask_serializer: SerializerKind,
         segmentation_volume_serializer: SerializerKind,
@@ -84,6 +85,7 @@ class Preprocessor:
         bundling_approach: BundlingKind,
         output_path: Optional[str] = None,
     ):
+
         local_store_path = Path(temporary_directory) / job.id / "RawData"
         output_dir = (
             Path(output_path)
@@ -121,28 +123,49 @@ class Preprocessor:
                 .add_segmentation_converter(volsegtools.VRMLConverter())
                 .add_segmentation_converter(volsegtools.CIFConverter())
                 .set_downsampling_strategy(
-                    Preprocessor.get_downsampling_strategy(downsampling_strategy)
-                )
-                .set_serializer(
+                    Preprocessor.get_downsampling_strategy(
+                        volume_downsampling_strategy
+                    ),
                     volsegtools.DataKind.VOLUME,
-                    Preprocessor.get_serializer(volume_serializer),
                 )
-                .set_serializer(
+                .set_downsampling_strategy(
+                    Preprocessor.get_downsampling_strategy(
+                        segmentation_downsampling_strategy
+                    ),
                     volsegtools.DataKind.SEGMENTATION_MASK,
-                    Preprocessor.get_serializer(segmentation_mask_serializer),
                 )
-                .set_serializer(
-                    volsegtools.DataKind.SEGMENTATION_VOLUME,
-                    Preprocessor.get_serializer(segmentation_volume_serializer),
-                )
-                .set_serializer(
+                .set_downsampling_strategy(
+                    Preprocessor.get_downsampling_strategy(
+                        segmentation_downsampling_strategy
+                    ),
                     volsegtools.DataKind.SEGMENTATION_MESH,
+                )
+                .set_downsampling_strategy(
+                    Preprocessor.get_downsampling_strategy(
+                        segmentation_downsampling_strategy
+                    ),
+                    volsegtools.DataKind.SEGMENTATION_VOLUME,
+                )
+                .set_serializer(
+                    Preprocessor.get_serializer(volume_serializer),
+                    volsegtools.DataKind.VOLUME,
+                )
+                .set_serializer(
+                    Preprocessor.get_serializer(segmentation_mask_serializer),
+                    volsegtools.DataKind.SEGMENTATION_MASK,
+                )
+                .set_serializer(
+                    Preprocessor.get_serializer(segmentation_volume_serializer),
+                    volsegtools.DataKind.SEGMENTATION_VOLUME,
+                )
+                .set_serializer(
                     Preprocessor.get_serializer(segmentation_mesh_serializer),
+                    volsegtools.DataKind.SEGMENTATION_MESH,
                 )
                 .set_output_dir(output_dir)
             )
 
-            builder.set_work_dir(local_store_path)
+            builder.set_local_store_path(local_store_path)
 
             match bundling_approach:
                 case BundlingKind.MVXS:
@@ -152,14 +175,34 @@ class Preprocessor:
                 case BundlingKind.ZIP:
                     builder.set_bundler(volsegtools.ZipBundler())
 
-            if downsampling_strategy == DownsamplignAlgorithmKind.TRIQUINTIC:
-                builder.add_post_process_step(volsegtools.SmoothingStep())
+            trquintic_post_process_steps: list[volsegtools.DataKind] = []
+            if volume_downsampling_strategy == DownsamplignAlgorithmKind.TRIQUINTIC:
+                trquintic_post_process_steps.append(volsegtools.DataKind.VOLUME)
 
-            if downsampling_strategy == DownsamplignAlgorithmKind.NULL:
+            if (
+                segmentation_downsampling_strategy
+                == DownsamplignAlgorithmKind.TRIQUINTIC
+            ):
+                trquintic_post_process_steps.extend(
+                    [
+                        volsegtools.DataKind.SEGMENTATION_MASK,
+                        volsegtools.DataKind.SEGMENTATION_VOLUME,
+                        volsegtools.DataKind.SEGMENTATION_MESH,
+                    ],
+                )
+
+            if len(trquintic_post_process_steps) > 0:
+                builder.add_post_process_step(
+                    volsegtools.SmoothingStep(trquintic_post_process_steps)
+                )
+
+            if (
+                volume_downsampling_strategy == DownsamplignAlgorithmKind.NULL
+            ):  # TODO: should we check here only volume strategy?
                 builder.keep_original(True)
 
-            builder._threshold = volsegtools.Bytes(
-                "5KB"
+            builder.set_downsampling_size_threshold(
+                volsegtools.Bytes("5KB")
             )  # Set lower file size threshold to 5KB.
 
             loop = asyncio.get_event_loop()
@@ -174,7 +217,7 @@ class Preprocessor:
                 pipeline: volsegtools.ProcessingPipeline = builder.build()
                 pipeline.add_state_change_callback(update_status)
                 return pipeline.sync_process(
-                    volumes=volume_source, segmentations=segmentation_source
+                    volume_files=volume_source, segmentation_files=segmentation_source
                 )
 
             result = await loop.run_in_executor(None, run_pipeline_blocking)
