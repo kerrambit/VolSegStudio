@@ -175,25 +175,25 @@ class Preprocessor:
                 case BundlingKind.ZIP:
                     builder.set_bundler(volsegtools.ZipBundler())
 
-            trquintic_post_process_steps: list[volsegtools.DataKind] = []
+            triquintic_post_process_steps: list[volsegtools.DataKind] = []
             if volume_downsampling_strategy == DownsamplignAlgorithmKind.TRIQUINTIC:
-                trquintic_post_process_steps.append(volsegtools.DataKind.VOLUME)
+                triquintic_post_process_steps.append(volsegtools.DataKind.VOLUME)
 
             if (
                 segmentation_downsampling_strategy
                 == DownsamplignAlgorithmKind.TRIQUINTIC
             ):
-                trquintic_post_process_steps.extend(
+                triquintic_post_process_steps.extend(
                     [
                         volsegtools.DataKind.SEGMENTATION_MASK,
                         volsegtools.DataKind.SEGMENTATION_VOLUME,
                         volsegtools.DataKind.SEGMENTATION_MESH,
-                    ],
+                    ]
                 )
 
-            if len(trquintic_post_process_steps) > 0:
+            if triquintic_post_process_steps:
                 builder.add_post_process_step(
-                    volsegtools.SmoothingStep(trquintic_post_process_steps)
+                    volsegtools.SmoothingStep(triquintic_post_process_steps)
                 )
 
             if (
@@ -201,11 +201,10 @@ class Preprocessor:
             ):  # TODO: should we check here only volume strategy?
                 builder.keep_original(True)
 
-            builder.set_downsampling_size_threshold(
-                volsegtools.Bytes("5KB")
-            )  # Set lower file size threshold to 5KB.
+            # Lower size threshold for keeping resolutions: 5 KB (= 5,000 bytes).
+            builder.set_downsampling_size_threshold(volsegtools.Bytes("5KB"))
 
-            loop = asyncio.get_event_loop()
+            loop = asyncio.get_running_loop()
 
             def update_status(state):
                 loop.call_soon_threadsafe(
@@ -216,9 +215,14 @@ class Preprocessor:
             def run_pipeline_blocking():
                 pipeline: volsegtools.ProcessingPipeline = builder.build()
                 pipeline.add_state_change_callback(update_status)
-                return pipeline.sync_process(
-                    volume_files=volume_source, segmentation_files=segmentation_source
+                pipeline_result = pipeline.sync_process(
+                    volume_files=volume_source,
+                    segmentation_files=segmentation_source,
                 )
+
+                pipeline.context.timer.pop_stage()
+
+                return pipeline_result
 
             result = await loop.run_in_executor(None, run_pipeline_blocking)
             job.result = list(map(str, result))
@@ -227,11 +231,6 @@ class Preprocessor:
             job.error = str(err)
 
         finally:
-            try:
-                volsegtools.Timer.pop_stage()
-            except Exception as e:
-                print(f"Timer pop warning: {e}")
-
             if Preprocessor.RM_TMP and local_store_path.exists():
                 shutil.rmtree(local_store_path, ignore_errors=True)
 
