@@ -34,7 +34,9 @@ export function ProcessingGeneralSettingsContent() {
                         setGlobalExportProcessingSettings(
                             e.currentTarget.checked,
                             getGlobalProcessingSettings().exportProcessing
-                                .downsamplingStrategy,
+                                .volumeDownsamplingStrategy,
+                            getGlobalProcessingSettings().exportProcessing
+                                .segmentationDownsamplingStrategy,
                             getGlobalProcessingSettings().exportProcessing.resolution,
                         )
                     }
@@ -51,18 +53,41 @@ export function ProcessingGeneralSettingsContent() {
 
                 <Stack gap="md" style={{ maxWidth: 480 }}>
                     <Select
-                        label="Downsampling method"
+                        label="Volume downsampling method"
                         description="Used when the export processes files of multiple formats within one processing call, or a format without its own per-format settings."
                         data={getDownsamplingStrategyOptions()}
                         value={
                             getGlobalProcessingSettings().exportProcessing
-                                .downsamplingStrategy
+                                .volumeDownsamplingStrategy
                         }
                         allowDeselect={false}
                         onChange={(value) =>
                             value &&
                             setGlobalExportProcessingSettings(
                                 getGlobalProcessingSettings().onLoadProcessing,
+                                value as DownsamplingStrategy,
+                                getGlobalProcessingSettings().exportProcessing
+                                    .segmentationDownsamplingStrategy,
+                                getGlobalProcessingSettings().exportProcessing.resolution,
+                            )
+                        }
+                    />
+
+                    <Select
+                        label="Segmentation downsampling method"
+                        description="Used when the export processes files of multiple formats within one processing call, or a format without its own per-format settings."
+                        data={getDownsamplingStrategyOptions()}
+                        value={
+                            getGlobalProcessingSettings().exportProcessing
+                                .segmentationDownsamplingStrategy
+                        }
+                        allowDeselect={false}
+                        onChange={(value) =>
+                            value &&
+                            setGlobalExportProcessingSettings(
+                                getGlobalProcessingSettings().onLoadProcessing,
+                                getGlobalProcessingSettings().exportProcessing
+                                    .volumeDownsamplingStrategy,
                                 value as DownsamplingStrategy,
                                 getGlobalProcessingSettings().exportProcessing.resolution,
                             )
@@ -80,7 +105,9 @@ export function ProcessingGeneralSettingsContent() {
                             setGlobalExportProcessingSettings(
                                 getGlobalProcessingSettings().onLoadProcessing,
                                 getGlobalProcessingSettings().exportProcessing
-                                    .downsamplingStrategy,
+                                    .volumeDownsamplingStrategy,
+                                getGlobalProcessingSettings().exportProcessing
+                                    .segmentationDownsamplingStrategy,
                                 value,
                             )
                         }

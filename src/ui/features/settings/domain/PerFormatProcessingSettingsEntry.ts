@@ -10,14 +10,17 @@ import type { ResolutionLevel } from "../../processing/resolution/domain/Resolut
 export type PerFormatProcessingSettingsEntry = {
     extension: string;
     requireProcessing: {
-        downsamplingStrategy: DownsamplingStrategy;
+        volumeDownsamplingStrategy: DownsamplingStrategy;
+        segmentationDownsamplingStrategy: DownsamplingStrategy;
     };
     previewProcessing: {
-        downsamplingStrategy: DownsamplingStrategy;
+        volumeDownsamplingStrategy: DownsamplingStrategy;
+        segmentationDownsamplingStrategy: DownsamplingStrategy;
         resolution: ResolutionLevel;
     };
     exportProcessing: {
-        downsamplingStrategy: DownsamplingStrategy;
+        volumeDownsamplingStrategy: DownsamplingStrategy;
+        segmentationDownsamplingStrategy: DownsamplingStrategy;
         resolution: ResolutionLevel;
     };
 };

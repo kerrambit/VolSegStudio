@@ -43,9 +43,10 @@ export function useStartFileRequiredProcessing() {
                 file,
                 type === "Segmentation" ? "Segmentation" : "Volume",
                 {
-                    volume_downsampling_strategy: requireSetting.downsamplingStrategy,
+                    volume_downsampling_strategy:
+                        requireSetting.volumeDownsamplingStrategy,
                     segmentation_downsampling_strategy:
-                        requireSetting.downsamplingStrategy, // TODO: based on format too
+                        requireSetting.segmentationDownsamplingStrategy,
                     volume_serializer: "mrc",
                     segmentation_mask_serializer: "mrc",
                     segmentation_volume_serializer: "mrc",

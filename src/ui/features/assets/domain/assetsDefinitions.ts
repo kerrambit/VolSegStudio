@@ -38,17 +38,20 @@ export interface AssetDefinition {
     requiresProcessing:
         | false
         | {
-              downsamplingStrategy: DownsamplingStrategy;
+              volumeDownsamplingStrategy: DownsamplingStrategy;
+              segmentationDownsamplingStrategy: DownsamplingStrategy;
           };
     offersProcessing:
         | false
         | {
               previewProcessing: {
-                  downsamplingStrategy: DownsamplingStrategy;
+                  volumeDownsamplingStrategy: DownsamplingStrategy;
+                  segmentationDownsamplingStrategy: DownsamplingStrategy;
                   resolution: ResolutionLevel;
               };
               exportProcessing: {
-                  downsamplingStrategy: DownsamplingStrategy;
+                  volumeDownsamplingStrategy: DownsamplingStrategy;
+                  segmentationDownsamplingStrategy: DownsamplingStrategy;
                   resolution: ResolutionLevel;
               };
           };
@@ -64,11 +67,13 @@ const SUPPORTED_ASSETS: Record<string, AssetDefinition> = {
         requiresProcessing: false,
         offersProcessing: {
             previewProcessing: {
-                downsamplingStrategy: "nearest",
+                volumeDownsamplingStrategy: "nearest",
+                segmentationDownsamplingStrategy: "nearest",
                 resolution: "low",
             },
             exportProcessing: {
-                downsamplingStrategy: "nearest", // // TODO: until volsegtools crashed on non-nearest strategy, otherwise tricubic
+                volumeDownsamplingStrategy: "nearest", // // TODO: until volsegtools crashed on non-nearest strategy, otherwise tricubic
+                segmentationDownsamplingStrategy: "nearest",
                 resolution: "high",
             },
         },

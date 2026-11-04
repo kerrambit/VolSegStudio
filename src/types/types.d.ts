@@ -213,21 +213,25 @@ type UserSettings = {
         global: {
             onLoadProcessing: boolean;
             exportProcessing: {
-                downsamplingStrategy: string;
+                volumeDownsamplingStrategy: string;
+                segmentationDownsamplingStrategy: string;
                 resolution: string;
             };
         };
         perFormat: {
             extension: string;
             requireProcessing: {
-                downsamplingStrategy: string;
+                volumeDownsamplingStrategy: string;
+                segmentationDownsamplingStrategy: string;
             };
             previewProcessing: {
-                downsamplingStrategy: string;
+                volumeDownsamplingStrategy: string;
+                segmentationDownsamplingStrategy: string;
                 resolution: string;
             };
             exportProcessing: {
-                downsamplingStrategy: string;
+                volumeDownsamplingStrategy: string;
+                segmentationDownsamplingStrategy: string;
                 resolution: string;
             };
         }[];

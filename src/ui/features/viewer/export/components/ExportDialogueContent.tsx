@@ -60,6 +60,29 @@ export interface ExportDialogueResultType {
     targetResolution: ResolutionLevel;
 }
 
+/**
+ * Checks if the given downsampling strategy maps to one of the simple "quality" levels.
+ */
+function isSimpleStrategy(strategy: DownsamplingStrategy): boolean {
+    return (
+        (Object.values(DOWNSAMPLING_LEVEL_TO_STRATEGY) as string[]).includes(
+            strategy,
+        )
+    );
+}
+
+/**
+ * Maps a downsampling strategy to the simple "quality" level it corresponds to,
+ * or to `"medium"` when it has none.
+ */
+function toSimpleLevel(strategy: DownsamplingStrategy): DownsamplingLevel {
+    return (
+        (Object.keys(DOWNSAMPLING_LEVEL_TO_STRATEGY) as DownsamplingLevel[]).find(
+            (level) => DOWNSAMPLING_LEVEL_TO_STRATEGY[level] === strategy,
+        ) ?? "medium"
+    );
+}
+
 interface ExportDialogueContentProps {
     /**
      * Local assets of type `Volume` which will be processed.
@@ -104,36 +127,48 @@ export function ExportDialogueContent({
         [...volumeAssets, ...segmentationAssets].map((asset) => asset.extension),
     );
 
-    // Downsampling toggle state (used without advanced export options).
-    // It starts unchecked if the loaded setting is "null".
-    const [enableDownsampling, setEnableDownsampling] = useState(
-        effectiveExportProcessing.downsamplingMethod !== "null",
+    // Volume and segmentation downsampling toggle states (used without advanced export options).
+    // They start unchecked if the loaded setting is "null".
+    const [enableVolumeDownsampling, setEnableVolumeDownsampling] = useState(
+        effectiveExportProcessing.volumeDownsamplingMethod !== "null",
+    );
+    const [enableSegmentationDownsampling, setEnableSegmentationDownsampling] =
+        useState(
+            effectiveExportProcessing.segmentationDownsamplingMethod !== "null",
+        );
+
+    // Check if the configured downsampling methods map to a simple "quality" level.
+    // If not (e.g. "smoothing"), we will show the full strategy select even in simple mode.
+    const [isVolumeStrategySimple] = useState<boolean>(() =>
+        isSimpleStrategy(effectiveExportProcessing.volumeDownsamplingMethod),
+    );
+    const [isSegmentationStrategySimple] = useState<boolean>(() =>
+        isSimpleStrategy(effectiveExportProcessing.segmentationDownsamplingMethod),
     );
 
-    // Check if the configured downsampling method maps to a simple "quality" level
-    // If not (e.g. "smoothing"), we will show the full strategy select even in simple mode
-    const [isStrategySimple] = useState<boolean>(() =>
-        (Object.values(DOWNSAMPLING_LEVEL_TO_STRATEGY) as string[]).includes(
-            effectiveExportProcessing.downsamplingMethod,
-        ),
-    );
-
-    // Simple downsampling level state (used without advanced export options),
-    // derived from the effective strategy when it maps to one of the simple levels.
-    const initialDownsamplingLevel =
-        (Object.keys(DOWNSAMPLING_LEVEL_TO_STRATEGY) as DownsamplingLevel[]).find(
-            (level) =>
-                DOWNSAMPLING_LEVEL_TO_STRATEGY[level] ===
-                effectiveExportProcessing.downsamplingMethod,
-        ) ?? "medium";
-    const [downsamplingLevel, setDownsamplingLevel] = useState<DownsamplingLevel>(
-        initialDownsamplingLevel,
-    );
+    // Simple downsampling level states (used without advanced export options),
+    // derived from the effective strategies when they map to one of the simple levels.
+    const [volumeDownsamplingLevel, setVolumeDownsamplingLevel] =
+        useState<DownsamplingLevel>(
+            toSimpleLevel(effectiveExportProcessing.volumeDownsamplingMethod),
+        );
+    const [segmentationDownsamplingLevel, setSegmentationDownsamplingLevel] =
+        useState<DownsamplingLevel>(
+            toSimpleLevel(
+                effectiveExportProcessing.segmentationDownsamplingMethod,
+            ),
+        );
     const downsamplingLevelOptions = getDownsamplingLevelOptions();
 
-    // Downsampling strategy state (used with advanced export options or when isStrategySimple is false).
-    const [downsamplingStrategy, setDownsamplingStrategy] =
-        useState<DownsamplingStrategy>(effectiveExportProcessing.downsamplingMethod);
+    // Downsampling strategy states (used with advanced export options or when the strategy is not simple).
+    const [volumeDownsamplingStrategy, setVolumeDownsamplingStrategy] =
+        useState<DownsamplingStrategy>(
+            effectiveExportProcessing.volumeDownsamplingMethod,
+        );
+    const [segmentationDownsamplingStrategy, setSegmentationDownsamplingStrategy] =
+        useState<DownsamplingStrategy>(
+            effectiveExportProcessing.segmentationDownsamplingMethod,
+        );
     const downsamplingStrategyOptions = getDownsamplingStrategyOptions();
 
     // Resolution of the processed volume embedded into the story export.
@@ -173,15 +208,24 @@ export function ExportDialogueContent({
         return null;
     }
 
-    // The effective downsampling strategy:
+    // The effective volume downsampling strategy:
     // Chosen directly with advanced export options. Otherwise, if enabled, derived from the simple level or strategy select.
     // If disabled in simple mode, fallback to "null".
-    const effectiveDownsamplingStrategy = showAdvancedExportOptions
-        ? downsamplingStrategy
-        : enableDownsampling
-        ? isStrategySimple
-            ? DOWNSAMPLING_LEVEL_TO_STRATEGY[downsamplingLevel]
-            : downsamplingStrategy
+    const effectiveVolumeDownsamplingStrategy = showAdvancedExportOptions
+        ? volumeDownsamplingStrategy
+        : enableVolumeDownsampling
+        ? isVolumeStrategySimple
+            ? DOWNSAMPLING_LEVEL_TO_STRATEGY[volumeDownsamplingLevel]
+            : volumeDownsamplingStrategy
+        : "null";
+
+    // The effective segmentation downsampling strategy, resolved the same way as the volume one.
+    const effectiveSegmentationDownsamplingStrategy = showAdvancedExportOptions
+        ? segmentationDownsamplingStrategy
+        : enableSegmentationDownsampling
+        ? isSegmentationStrategySimple
+            ? DOWNSAMPLING_LEVEL_TO_STRATEGY[segmentationDownsamplingLevel]
+            : segmentationDownsamplingStrategy
         : "null";
 
     // Names of the assets to be processed, used in the summary text.
@@ -205,9 +249,9 @@ export function ExportDialogueContent({
                         </List.Item>
                         <List.Item>
                             <b>Downsampling strategy:</b>{" "}
-                            {effectiveDownsamplingStrategy === "null"
+                            {effectiveVolumeDownsamplingStrategy === "null"
                                 ? "None"
-                                : effectiveDownsamplingStrategy}
+                                : effectiveVolumeDownsamplingStrategy}
                         </List.Item>
                         <List.Item>
                             <b>Embedded resolution:</b> {targetResolution}
@@ -228,6 +272,12 @@ export function ExportDialogueContent({
                         <List.Item>
                             <b>Source{segmentationAssets.length > 1 ? "s" : ""}:</b>{" "}
                             {segmentationAssetsNames}
+                        </List.Item>
+                        <List.Item>
+                            <b>Downsampling strategy:</b>{" "}
+                            {effectiveSegmentationDownsamplingStrategy === "null"
+                                ? "None"
+                                : effectiveSegmentationDownsamplingStrategy}
                         </List.Item>
                         <List.Item>
                             <b>Format:</b> <code>mrc</code>
@@ -296,9 +346,21 @@ export function ExportDialogueContent({
                         Segmentation
                     </Text>
                     <List size="sm" spacing={4}>
+                        {showAdvancedExportOptions ? (
+                            <List.Item>
+                                <b>Downsampling strategy:</b> the algorithm used to
+                                downsample the segmentation.
+                            </List.Item>
+                        ) : (
+                            <List.Item>
+                                <b>Downsampling strength:</b> the stronger the
+                                downsampling, the smaller (and faster to load) the
+                                exported segmentation.
+                            </List.Item>
+                        )}
                         <List.Item>
-                            Segmentation sources are only serialized into the "mrc"
-                            format, they are not downsampled.
+                            Segmentation sources are serialized into the "mrc"
+                            format.
                         </List.Item>
                     </List>
                 </div>
@@ -404,12 +466,12 @@ export function ExportDialogueContent({
                                         <>
                                             {/* All downsampling strategies, shown directly. */}
                                             <Select
-                                                label="Downsampling strategy:"
+                                                label="Volume downsampling strategy:"
                                                 data={downsamplingStrategyOptions}
-                                                value={downsamplingStrategy}
+                                                value={volumeDownsamplingStrategy}
                                                 allowDeselect={false}
                                                 onChange={(value) =>
-                                                    setDownsamplingStrategy(
+                                                    setVolumeDownsamplingStrategy(
                                                         value as DownsamplingStrategy,
                                                     )
                                                 }
@@ -449,28 +511,30 @@ export function ExportDialogueContent({
                                         >
                                             <Checkbox
                                                 label="Downsample volume"
-                                                checked={enableDownsampling}
+                                                checked={enableVolumeDownsampling}
                                                 onChange={(e) =>
-                                                    setEnableDownsampling(
+                                                    setEnableVolumeDownsampling(
                                                         e.currentTarget.checked,
                                                     )
                                                 }
                                                 size="sm"
                                             />
-                                            {isStrategySimple ? (
+                                            {isVolumeStrategySimple ? (
                                                 <Select
                                                     label="Downsampling strength:"
                                                     data={downsamplingLevelOptions}
-                                                    value={downsamplingLevel}
+                                                    value={volumeDownsamplingLevel}
                                                     allowDeselect={false}
                                                     onChange={(value) =>
-                                                        setDownsamplingLevel(
+                                                        setVolumeDownsamplingLevel(
                                                             value as DownsamplingLevel,
                                                         )
                                                     }
                                                     placeholder="Select downsampling..."
                                                     size="sm"
-                                                    disabled={!enableDownsampling}
+                                                    disabled={
+                                                        !enableVolumeDownsampling
+                                                    }
                                                     comboboxProps={{
                                                         withinPortal: true,
                                                         zIndex: 10000,
@@ -480,16 +544,18 @@ export function ExportDialogueContent({
                                                 <Select
                                                     label="Downsampling strategy:"
                                                     data={downsamplingStrategyOptions}
-                                                    value={downsamplingStrategy}
+                                                    value={volumeDownsamplingStrategy}
                                                     allowDeselect={false}
                                                     onChange={(value) =>
-                                                        setDownsamplingStrategy(
+                                                        setVolumeDownsamplingStrategy(
                                                             value as DownsamplingStrategy,
                                                         )
                                                     }
                                                     placeholder="Select a strategy..."
                                                     size="sm"
-                                                    disabled={!enableDownsampling}
+                                                    disabled={
+                                                        !enableVolumeDownsampling
+                                                    }
                                                     comboboxProps={{
                                                         withinPortal: true,
                                                         zIndex: 10000,
@@ -552,6 +618,94 @@ export function ExportDialogueContent({
                                             style={{ flexGrow: 1 }}
                                         />
                                     </div>
+
+                                    {showAdvancedExportOptions ? (
+                                        <Select
+                                            label="Segmentation downsampling strategy:"
+                                            data={downsamplingStrategyOptions}
+                                            value={segmentationDownsamplingStrategy}
+                                            allowDeselect={false}
+                                            onChange={(value) =>
+                                                setSegmentationDownsamplingStrategy(
+                                                    value as DownsamplingStrategy,
+                                                )
+                                            }
+                                            placeholder="Select a strategy..."
+                                            size="sm"
+                                            comboboxProps={{
+                                                withinPortal: true,
+                                                zIndex: 10000,
+                                            }}
+                                        />
+                                    ) : (
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                flexDirection: "column",
+                                                gap: ".5em",
+                                            }}
+                                        >
+                                            <Checkbox
+                                                label="Downsample segmentation"
+                                                checked={
+                                                    enableSegmentationDownsampling
+                                                }
+                                                onChange={(e) =>
+                                                    setEnableSegmentationDownsampling(
+                                                        e.currentTarget.checked,
+                                                    )
+                                                }
+                                                size="sm"
+                                            />
+                                            {isSegmentationStrategySimple ? (
+                                                <Select
+                                                    label="Downsampling strength:"
+                                                    data={downsamplingLevelOptions}
+                                                    value={
+                                                        segmentationDownsamplingLevel
+                                                    }
+                                                    allowDeselect={false}
+                                                    onChange={(value) =>
+                                                        setSegmentationDownsamplingLevel(
+                                                            value as DownsamplingLevel,
+                                                        )
+                                                    }
+                                                    placeholder="Select downsampling..."
+                                                    size="sm"
+                                                    disabled={
+                                                        !enableSegmentationDownsampling
+                                                    }
+                                                    comboboxProps={{
+                                                        withinPortal: true,
+                                                        zIndex: 10000,
+                                                    }}
+                                                />
+                                            ) : (
+                                                <Select
+                                                    label="Downsampling strategy:"
+                                                    data={downsamplingStrategyOptions}
+                                                    value={
+                                                        segmentationDownsamplingStrategy
+                                                    }
+                                                    allowDeselect={false}
+                                                    onChange={(value) =>
+                                                        setSegmentationDownsamplingStrategy(
+                                                            value as DownsamplingStrategy,
+                                                        )
+                                                    }
+                                                    placeholder="Select a strategy..."
+                                                    size="sm"
+                                                    disabled={
+                                                        !enableSegmentationDownsampling
+                                                    }
+                                                    comboboxProps={{
+                                                        withinPortal: true,
+                                                        zIndex: 10000,
+                                                    }}
+                                                />
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
                             </Collapse>
                         </div>
@@ -710,9 +864,9 @@ export function ExportDialogueContent({
                         close({
                             properties: {
                                 volume_downsampling_strategy:
-                                    effectiveDownsamplingStrategy,
+                                    effectiveVolumeDownsamplingStrategy,
                                 segmentation_downsampling_strategy:
-                                    effectiveDownsamplingStrategy, // TODO: make for this also the settings select as for volume
+                                    effectiveSegmentationDownsamplingStrategy,
                                 volume_serializer: "mrc" as SerializerKind,
                                 segmentation_mask_serializer: "mrc" as SerializerKind,
                                 segmentation_volume_serializer: "mrc" as SerializerKind,
