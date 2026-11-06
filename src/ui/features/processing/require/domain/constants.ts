@@ -8,3 +8,6 @@ import type { DownsamplingStrategy } from "../../downsampling/domain/Downsamplin
 
 export const DEFAULT_REQUIRES_PROCESSING_DOWNSAMPLING_STRATEGY: DownsamplingStrategy =
     "null";
+
+export const DEFAULT_REQUIRES_PROCESSING_SEGMENTATION_DOWNSAMPLING_STRATEGY: DownsamplingStrategy =
+    "null";

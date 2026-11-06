@@ -11,21 +11,25 @@ export type ProcessingSettings = {
     global: {
         onLoadProcessing: boolean;
         exportProcessing: {
-            downsamplingStrategy: DownsamplingStrategy;
+            volumeDownsamplingStrategy: DownsamplingStrategy;
+            segmentationDownsamplingStrategy: DownsamplingStrategy;
             resolution: ResolutionLevel;
         };
     };
     perFormat: {
         extension: string;
         requireProcessing: {
-            downsamplingStrategy: DownsamplingStrategy;
+            volumeDownsamplingStrategy: DownsamplingStrategy;
+            segmentationDownsamplingStrategy: DownsamplingStrategy;
         };
         previewProcessing: {
-            downsamplingStrategy: DownsamplingStrategy;
+            volumeDownsamplingStrategy: DownsamplingStrategy;
+            segmentationDownsamplingStrategy: DownsamplingStrategy;
             resolution: ResolutionLevel;
         };
         exportProcessing: {
-            downsamplingStrategy: DownsamplingStrategy;
+            volumeDownsamplingStrategy: DownsamplingStrategy;
+            segmentationDownsamplingStrategy: DownsamplingStrategy;
             resolution: ResolutionLevel;
         };
     }[];

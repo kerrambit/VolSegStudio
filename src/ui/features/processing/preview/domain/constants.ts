@@ -14,4 +14,7 @@ export const PREVIEW_DOWNSAMPLING_SIZE_THRESHOLD = 50 * 1024 * 1024; // TODO: de
 
 export const DEFAULT_PREVIEW_DOWNSAMPLING_STRATEGY: DownsamplingStrategy = "nearest";
 
+export const DEFAULT_PREVIEW_SEGMENTATION_DOWNSAMPLING_STRATEGY: DownsamplingStrategy =
+    "nearest";
+
 export const DEFAULT_PREVIEW_RESOLUTION_LEVEL: ResolutionLevel = "low";

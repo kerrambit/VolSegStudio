@@ -33,6 +33,7 @@ import {
     type ExportDialogueResultType,
 } from "../components/ExportDialogueContent";
 import {
+    getFilenameFromPath,
     getFilePathWithoutFile,
     replaceFileExtension,
 } from "../../../../utils/fileDataUtils";
@@ -364,6 +365,12 @@ async function continueExportAfterProcessing(
  * Reads the processed files of all export jobs and picks, per processed asset,
  * the file matching the chosen target resolution (clamped to the resolutions
  * actually available). Expects `..._r{N}_...` naming produced by the serializer.
+ *
+ * The file is picked by its name only, so just the single chosen file per job is
+ * read and transferred over IPC. Reading all output files of all jobs at once
+ * (which can easily reach gigabytes now that segmentations are downsampled too)
+ * would crash the app.
+ *
  * @param jobResults map of processing job ID -> result paths of processed files
  * @returns map of managed asset ID -> chosen processed file
  */
@@ -372,23 +379,6 @@ async function collectProcessedFilesByAssetId(
 ): Promise<Map<AssetId, AssetId>> {
     const exportState = useExportStore.getState();
     const targetResolution = exportState.targetResolution ?? "high";
-
-    const processedFiles = Array.from(jobResults.values()).flat();
-    if (processedFiles.length === 0) {
-        return new Map();
-    }
-
-    // TODO: we do not full `FileData` object here
-    const filesData = await window.electron.getFileData(processedFiles);
-    if (filesData instanceof Error) {
-        loggerUi.error(
-            `Unable to read processed export files [${processedFiles}]! Details: <${filesData.message}>.`,
-        );
-        pushErrorNotification(
-            `Unable to read processed export files [${processedFiles}]! Will use original non-downsampled version of files.`,
-        );
-        return new Map();
-    }
 
     const assets = Array.from(useManagedAssetsStore.getState().assets.values());
 
@@ -399,20 +389,47 @@ async function collectProcessedFilesByAssetId(
             continue;
         }
 
-        const files = filesData.filter((file) => resultPaths.includes(file.path));
-        if (files.length === 0) {
-            continue;
-        }
-
-        const chosenFile =
-            pickFileByResolution<FileData>(files, targetResolution) ?? files[0];
-
         const managedAsset = assets.find((a) => a.id === assetId);
         if (!managedAsset) {
             loggerUi.error(`Managed asset with ID <${assetId}> was not found!`);
             pushErrorNotification(`Internal error occured!`);
             continue;
         }
+
+        if (resultPaths.length === 0) {
+            pushWarningNotification(
+                `No output files were produced for "${managedAsset.name}"! Will use original non-downsampled version.`,
+            );
+            loggerUi.warn(
+                `No output files were produced for (export) processing job <${jobId}>!`,
+            );
+            continue;
+        }
+
+        // Pick the file matching the chosen target resolution based on its name only.
+        const chosenPath =
+            pickFileByResolution(
+                resultPaths.map((path) => ({
+                    name: getFilenameFromPath(path),
+                    path,
+                })),
+                targetResolution,
+            )?.path ?? resultPaths[0];
+
+        // Read only the single chosen file.
+        // TODO: we do not have full `FileData` object here
+        const filesData = await window.electron.getFileData([chosenPath]);
+        if (filesData instanceof Error) {
+            loggerUi.error(
+                `Unable to read processed export file <${chosenPath}>! Details: <${filesData.message}>.`,
+            );
+            pushErrorNotification(
+                `Unable to read processed export file <${chosenPath}>! Will use original non-downsampled version of the file.`,
+            );
+            continue;
+        }
+
+        const chosenFile = filesData[0];
 
         // Register processed export file as new ManagedAsset and store in file mappings.
         const newManagedAsset = useManagedAssetsStore

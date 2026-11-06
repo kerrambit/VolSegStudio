@@ -58,15 +58,34 @@ export function PerFormatProcessingSettingsPaper({
                             Required processing
                         </Text>
                         <Select
-                            label="Downsampling method"
+                            label="Volume downsampling method"
                             description="Applied when the file cannot be opened directly and must be processed."
                             data={downsamplingMethodOptions}
-                            value={entry.requireProcessing.downsamplingStrategy}
+                            value={entry.requireProcessing.volumeDownsamplingStrategy}
                             allowDeselect={false}
                             onChange={(value) =>
                                 value &&
                                 setPerFormatRequireProcessingDownsamplingMethod(
                                     extension,
+                                    value,
+                                    entry.requireProcessing
+                                        .segmentationDownsamplingStrategy,
+                                )
+                            }
+                        />
+                        <Select
+                            label="Segmentation downsampling method"
+                            description="Applied when the file cannot be opened directly and must be processed."
+                            data={downsamplingMethodOptions}
+                            value={
+                                entry.requireProcessing.segmentationDownsamplingStrategy
+                            }
+                            allowDeselect={false}
+                            onChange={(value) =>
+                                value &&
+                                setPerFormatRequireProcessingDownsamplingMethod(
+                                    extension,
+                                    entry.requireProcessing.volumeDownsamplingStrategy,
                                     value,
                                 )
                             }
@@ -80,14 +99,31 @@ export function PerFormatProcessingSettingsPaper({
                 </Text>
 
                 <Select
-                    label="Downsampling method"
+                    label="Volume downsampling method"
                     data={downsamplingMethodOptions}
-                    value={entry.previewProcessing.downsamplingStrategy}
+                    value={entry.previewProcessing.volumeDownsamplingStrategy}
                     allowDeselect={false}
                     onChange={(value) =>
                         value &&
                         setPerFormatPreviewProcessingSettings(
                             extension,
+                            value,
+                            entry.previewProcessing.segmentationDownsamplingStrategy,
+                            entry.previewProcessing.resolution,
+                        )
+                    }
+                />
+
+                <Select
+                    label="Segmentation downsampling method"
+                    data={downsamplingMethodOptions}
+                    value={entry.previewProcessing.segmentationDownsamplingStrategy}
+                    allowDeselect={false}
+                    onChange={(value) =>
+                        value &&
+                        setPerFormatPreviewProcessingSettings(
+                            extension,
+                            entry.previewProcessing.volumeDownsamplingStrategy,
                             value,
                             entry.previewProcessing.resolution,
                         )
@@ -104,7 +140,8 @@ export function PerFormatProcessingSettingsPaper({
                         value &&
                         setPerFormatPreviewProcessingSettings(
                             extension,
-                            entry.previewProcessing.downsamplingStrategy,
+                            entry.previewProcessing.volumeDownsamplingStrategy,
+                            entry.previewProcessing.segmentationDownsamplingStrategy,
                             value,
                         )
                     }
@@ -117,15 +154,33 @@ export function PerFormatProcessingSettingsPaper({
                 </Text>
 
                 <Select
-                    label="Downsampling method"
+                    label="Volume downsampling method"
                     description="Used when the export processes only files of this format. Or when working with Process-On-Load workflow (see Settings - Processing)."
                     data={downsamplingMethodOptions}
-                    value={entry.exportProcessing.downsamplingStrategy}
+                    value={entry.exportProcessing.volumeDownsamplingStrategy}
                     allowDeselect={false}
                     onChange={(value) =>
                         value &&
                         setPerFormatExportProcessingSettings(
                             extension,
+                            value,
+                            entry.exportProcessing.segmentationDownsamplingStrategy,
+                            entry.exportProcessing.resolution,
+                        )
+                    }
+                />
+
+                <Select
+                    label="Segmentation downsampling method"
+                    description="Used when the export processes only files of this format. Or when working with Process-On-Load workflow (see Settings - Processing)."
+                    data={downsamplingMethodOptions}
+                    value={entry.exportProcessing.segmentationDownsamplingStrategy}
+                    allowDeselect={false}
+                    onChange={(value) =>
+                        value &&
+                        setPerFormatExportProcessingSettings(
+                            extension,
+                            entry.exportProcessing.volumeDownsamplingStrategy,
                             value,
                             entry.exportProcessing.resolution,
                         )
@@ -142,7 +197,8 @@ export function PerFormatProcessingSettingsPaper({
                         value &&
                         setPerFormatExportProcessingSettings(
                             extension,
-                            entry.exportProcessing.downsamplingStrategy,
+                            entry.exportProcessing.volumeDownsamplingStrategy,
+                            entry.exportProcessing.segmentationDownsamplingStrategy,
                             value,
                         )
                     }

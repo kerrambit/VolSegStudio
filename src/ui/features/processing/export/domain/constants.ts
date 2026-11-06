@@ -9,4 +9,7 @@ import type { ResolutionLevel } from "../../resolution/domain/ResolutionLevel";
 
 export const DEFAULT_EXPORT_DOWNSAMPLING_STRATEGY: DownsamplingStrategy = "nearest"; // TODO: until volsegtools crashed on non-nearest strategy, otherwise tricubic
 
+export const DEFAULT_EXPORT_SEGMENTATION_DOWNSAMPLING_STRATEGY: DownsamplingStrategy =
+    "nearest";
+
 export const DEFAULT_EXPORT_RESOLUTION_LEVEL: ResolutionLevel = "high";

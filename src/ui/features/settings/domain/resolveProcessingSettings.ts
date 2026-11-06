@@ -9,16 +9,21 @@ import type { DownsamplingStrategy } from "../../processing/downsampling/domain/
 import { parseDownsamplingStrategy } from "../../processing/downsampling/domain/parseDownsamplingStrategy";
 import { parseResolutionLevel } from "../../processing/resolution/domain/parseResolutionLevel";
 import type { ResolutionLevel } from "../../processing/resolution/domain/ResolutionLevel";
-import { DEFAULT_REQUIRES_PROCESSING_DOWNSAMPLING_STRATEGY } from "../../processing/require/domain/constants";
+import {
+    DEFAULT_REQUIRES_PROCESSING_DOWNSAMPLING_STRATEGY,
+    DEFAULT_REQUIRES_PROCESSING_SEGMENTATION_DOWNSAMPLING_STRATEGY,
+} from "../../processing/require/domain/constants";
 import type { PerFormatProcessingSettingsEntry } from "./PerFormatProcessingSettingsEntry";
 import type { ProcessingSettings } from "./ProcessingSettings";
 import {
     DEFAULT_EXPORT_DOWNSAMPLING_STRATEGY,
     DEFAULT_EXPORT_RESOLUTION_LEVEL,
+    DEFAULT_EXPORT_SEGMENTATION_DOWNSAMPLING_STRATEGY,
 } from "../../processing/export/domain/constants";
 import {
     DEFAULT_PREVIEW_DOWNSAMPLING_STRATEGY,
     DEFAULT_PREVIEW_RESOLUTION_LEVEL,
+    DEFAULT_PREVIEW_SEGMENTATION_DOWNSAMPLING_STRATEGY,
 } from "../../processing/preview/domain/constants";
 import { ENABLE_ON_LOAD_PROCESSING } from "../../processing/domain/constants";
 
@@ -30,9 +35,14 @@ export function resolveProcessingSettings(
             global: {
                 onLoadProcessing: settings.global.onLoadProcessing,
                 exportProcessing: {
-                    downsamplingStrategy: parseDownsamplingStrategy(
-                        settings.global.exportProcessing.downsamplingStrategy,
+                    volumeDownsamplingStrategy: parseDownsamplingStrategy(
+                        settings.global.exportProcessing.volumeDownsamplingStrategy,
                         DEFAULT_EXPORT_DOWNSAMPLING_STRATEGY,
+                    ),
+                    segmentationDownsamplingStrategy: parseDownsamplingStrategy(
+                        settings.global.exportProcessing
+                            .segmentationDownsamplingStrategy,
+                        DEFAULT_EXPORT_SEGMENTATION_DOWNSAMPLING_STRATEGY,
                     ),
                     resolution: parseResolutionLevel(
                         settings.global.exportProcessing.resolution,
@@ -43,15 +53,23 @@ export function resolveProcessingSettings(
             perFormat: (settings.perFormat || []).map((entry) => ({
                 extension: entry.extension,
                 requireProcessing: {
-                    downsamplingStrategy: parseDownsamplingStrategy(
-                        entry.requireProcessing.downsamplingStrategy,
+                    volumeDownsamplingStrategy: parseDownsamplingStrategy(
+                        entry.requireProcessing.volumeDownsamplingStrategy,
                         DEFAULT_REQUIRES_PROCESSING_DOWNSAMPLING_STRATEGY,
+                    ),
+                    segmentationDownsamplingStrategy: parseDownsamplingStrategy(
+                        entry.requireProcessing.segmentationDownsamplingStrategy,
+                        DEFAULT_REQUIRES_PROCESSING_SEGMENTATION_DOWNSAMPLING_STRATEGY,
                     ),
                 },
                 previewProcessing: {
-                    downsamplingStrategy: parseDownsamplingStrategy(
-                        entry.previewProcessing.downsamplingStrategy,
+                    volumeDownsamplingStrategy: parseDownsamplingStrategy(
+                        entry.previewProcessing.volumeDownsamplingStrategy,
                         DEFAULT_PREVIEW_DOWNSAMPLING_STRATEGY,
+                    ),
+                    segmentationDownsamplingStrategy: parseDownsamplingStrategy(
+                        entry.previewProcessing.segmentationDownsamplingStrategy,
+                        DEFAULT_PREVIEW_SEGMENTATION_DOWNSAMPLING_STRATEGY,
                     ),
                     resolution: parseResolutionLevel(
                         entry.previewProcessing.resolution,
@@ -59,9 +77,13 @@ export function resolveProcessingSettings(
                     ),
                 },
                 exportProcessing: {
-                    downsamplingStrategy: parseDownsamplingStrategy(
-                        entry.exportProcessing.downsamplingStrategy,
+                    volumeDownsamplingStrategy: parseDownsamplingStrategy(
+                        entry.exportProcessing.volumeDownsamplingStrategy,
                         DEFAULT_EXPORT_DOWNSAMPLING_STRATEGY,
+                    ),
+                    segmentationDownsamplingStrategy: parseDownsamplingStrategy(
+                        entry.exportProcessing.segmentationDownsamplingStrategy,
+                        DEFAULT_EXPORT_SEGMENTATION_DOWNSAMPLING_STRATEGY,
                     ),
                     resolution: parseResolutionLevel(
                         entry.exportProcessing.resolution,
@@ -76,7 +98,9 @@ export function resolveProcessingSettings(
         global: {
             onLoadProcessing: ENABLE_ON_LOAD_PROCESSING,
             exportProcessing: {
-                downsamplingStrategy: DEFAULT_EXPORT_DOWNSAMPLING_STRATEGY,
+                volumeDownsamplingStrategy: DEFAULT_EXPORT_DOWNSAMPLING_STRATEGY,
+                segmentationDownsamplingStrategy:
+                    DEFAULT_EXPORT_SEGMENTATION_DOWNSAMPLING_STRATEGY,
                 resolution: DEFAULT_EXPORT_RESOLUTION_LEVEL,
             },
         },
@@ -96,9 +120,12 @@ export function getPerFormatEntry(
     processing: ProcessingSettings,
     extension: string,
     defaultRequiresProcessingDownsamplingStrategy: DownsamplingStrategy = DEFAULT_REQUIRES_PROCESSING_DOWNSAMPLING_STRATEGY,
+    defaultRequiresProcessingSegmentationDownsamplingStrategy: DownsamplingStrategy = DEFAULT_REQUIRES_PROCESSING_SEGMENTATION_DOWNSAMPLING_STRATEGY,
     defaultPreviewDownsamplingStrategy: DownsamplingStrategy = DEFAULT_PREVIEW_DOWNSAMPLING_STRATEGY,
+    defaultPreviewSegmentationDownsamplingStrategy: DownsamplingStrategy = DEFAULT_PREVIEW_SEGMENTATION_DOWNSAMPLING_STRATEGY,
     defaultPreviewResolutionLevel: ResolutionLevel = DEFAULT_PREVIEW_RESOLUTION_LEVEL,
     defaultExportDownsamplingStrategy: DownsamplingStrategy = DEFAULT_EXPORT_DOWNSAMPLING_STRATEGY,
+    defaultExportSegmentationDownsamplingStrategy: DownsamplingStrategy = DEFAULT_EXPORT_SEGMENTATION_DOWNSAMPLING_STRATEGY,
     defaultExportResolutionLevel: ResolutionLevel = DEFAULT_EXPORT_RESOLUTION_LEVEL,
 ): PerFormatProcessingSettingsEntry {
     // Try to find the user's saved entry first.
@@ -110,15 +137,23 @@ export function getPerFormatEntry(
             return {
                 extension: extension,
                 requireProcessing: {
-                    downsamplingStrategy: parseDownsamplingStrategy(
-                        existingEntry.requireProcessing.downsamplingStrategy,
+                    volumeDownsamplingStrategy: parseDownsamplingStrategy(
+                        existingEntry.requireProcessing.volumeDownsamplingStrategy,
                         defaultRequiresProcessingDownsamplingStrategy,
+                    ),
+                    segmentationDownsamplingStrategy: parseDownsamplingStrategy(
+                        existingEntry.requireProcessing.segmentationDownsamplingStrategy,
+                        defaultRequiresProcessingSegmentationDownsamplingStrategy,
                     ),
                 },
                 previewProcessing: {
-                    downsamplingStrategy: parseDownsamplingStrategy(
-                        existingEntry.previewProcessing.downsamplingStrategy,
+                    volumeDownsamplingStrategy: parseDownsamplingStrategy(
+                        existingEntry.previewProcessing.volumeDownsamplingStrategy,
                         defaultPreviewDownsamplingStrategy,
+                    ),
+                    segmentationDownsamplingStrategy: parseDownsamplingStrategy(
+                        existingEntry.previewProcessing.segmentationDownsamplingStrategy,
+                        defaultPreviewSegmentationDownsamplingStrategy,
                     ),
                     resolution: parseResolutionLevel(
                         existingEntry.previewProcessing.resolution,
@@ -126,9 +161,13 @@ export function getPerFormatEntry(
                     ),
                 },
                 exportProcessing: {
-                    downsamplingStrategy: parseDownsamplingStrategy(
-                        existingEntry.exportProcessing.downsamplingStrategy,
+                    volumeDownsamplingStrategy: parseDownsamplingStrategy(
+                        existingEntry.exportProcessing.volumeDownsamplingStrategy,
                         defaultExportDownsamplingStrategy,
+                    ),
+                    segmentationDownsamplingStrategy: parseDownsamplingStrategy(
+                        existingEntry.exportProcessing.segmentationDownsamplingStrategy,
+                        defaultExportSegmentationDownsamplingStrategy,
                     ),
                     resolution: parseResolutionLevel(
                         existingEntry.exportProcessing.resolution,
@@ -148,26 +187,38 @@ export function getPerFormatEntry(
         return {
             extension: extension,
             requireProcessing: {
-                downsamplingStrategy:
+                volumeDownsamplingStrategy:
                     requires !== false
-                        ? requires.downsamplingStrategy
+                        ? requires.volumeDownsamplingStrategy
                         : defaultRequiresProcessingDownsamplingStrategy,
+                segmentationDownsamplingStrategy:
+                    requires !== false
+                        ? requires.segmentationDownsamplingStrategy
+                        : defaultRequiresProcessingSegmentationDownsamplingStrategy,
             },
             previewProcessing: {
-                downsamplingStrategy:
+                volumeDownsamplingStrategy:
                     offers !== false
-                        ? offers.previewProcessing.downsamplingStrategy
+                        ? offers.previewProcessing.volumeDownsamplingStrategy
                         : defaultPreviewDownsamplingStrategy,
+                segmentationDownsamplingStrategy:
+                    offers !== false
+                        ? offers.previewProcessing.segmentationDownsamplingStrategy
+                        : defaultPreviewSegmentationDownsamplingStrategy,
                 resolution:
                     offers !== false
                         ? offers.previewProcessing.resolution
                         : defaultPreviewResolutionLevel,
             },
             exportProcessing: {
-                downsamplingStrategy:
+                volumeDownsamplingStrategy:
                     offers !== false
-                        ? offers.exportProcessing.downsamplingStrategy
+                        ? offers.exportProcessing.volumeDownsamplingStrategy
                         : defaultExportDownsamplingStrategy,
+                segmentationDownsamplingStrategy:
+                    offers !== false
+                        ? offers.exportProcessing.segmentationDownsamplingStrategy
+                        : defaultExportSegmentationDownsamplingStrategy,
                 resolution:
                     offers !== false
                         ? offers.exportProcessing.resolution
@@ -180,14 +231,20 @@ export function getPerFormatEntry(
     return {
         extension: extension,
         requireProcessing: {
-            downsamplingStrategy: defaultRequiresProcessingDownsamplingStrategy,
+            volumeDownsamplingStrategy: defaultRequiresProcessingDownsamplingStrategy,
+            segmentationDownsamplingStrategy:
+                defaultRequiresProcessingSegmentationDownsamplingStrategy,
         },
         previewProcessing: {
-            downsamplingStrategy: defaultPreviewDownsamplingStrategy,
+            volumeDownsamplingStrategy: defaultPreviewDownsamplingStrategy,
+            segmentationDownsamplingStrategy:
+                defaultPreviewSegmentationDownsamplingStrategy,
             resolution: defaultPreviewResolutionLevel,
         },
         exportProcessing: {
-            downsamplingStrategy: defaultExportDownsamplingStrategy,
+            volumeDownsamplingStrategy: defaultExportDownsamplingStrategy,
+            segmentationDownsamplingStrategy:
+                defaultExportSegmentationDownsamplingStrategy,
             resolution: defaultExportResolutionLevel,
         },
     };
@@ -214,14 +271,18 @@ export function resolveExportProcessingSettings(
         uniqueExtensions.length === 1
             ? getPerFormatEntry(processing, uniqueExtensions[0]).exportProcessing
             : {
-                  downsamplingStrategy:
-                      processing.global.exportProcessing.downsamplingStrategy,
+                  volumeDownsamplingStrategy:
+                      processing.global.exportProcessing.volumeDownsamplingStrategy,
+                  segmentationDownsamplingStrategy:
+                      processing.global.exportProcessing
+                          .segmentationDownsamplingStrategy,
 
                   resolution: processing.global.exportProcessing.resolution,
               };
 
     return {
-        downsamplingMethod: source.downsamplingStrategy,
+        volumeDownsamplingMethod: source.volumeDownsamplingStrategy,
+        segmentationDownsamplingMethod: source.segmentationDownsamplingStrategy,
         resolution: source.resolution,
     };
 }

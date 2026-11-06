@@ -28,7 +28,8 @@ export function useProcessingSettings() {
 
     const setGlobalExportProcessingSettings = (
         onLoadProcessing: boolean,
-        downsamplingStrategy: DownsamplingStrategy,
+        volumeDownsamplingStrategy: DownsamplingStrategy,
+        segmentationDownsamplingStrategy: DownsamplingStrategy,
         resolution: ResolutionLevel,
     ) => {
         setSettings({
@@ -38,7 +39,8 @@ export function useProcessingSettings() {
                 global: {
                     onLoadProcessing: onLoadProcessing,
                     exportProcessing: {
-                        downsamplingStrategy,
+                        volumeDownsamplingStrategy,
+                        segmentationDownsamplingStrategy,
                         resolution,
                     },
                 },
@@ -87,25 +89,29 @@ export function useProcessingSettings() {
 
     const setPerFormatRequireProcessingDownsamplingMethod = (
         extension: string,
-        downsamplingStrategy: DownsamplingStrategy,
+        volumeDownsamplingStrategy: DownsamplingStrategy,
+        segmentationDownsamplingStrategy: DownsamplingStrategy,
     ) => {
         updatePerFormatEntry(extension, (entry) => ({
             ...entry,
             requireProcessing: {
-                downsamplingStrategy,
+                volumeDownsamplingStrategy,
+                segmentationDownsamplingStrategy,
             },
         }));
     };
 
     const setPerFormatPreviewProcessingSettings = (
         extension: string,
-        downsamplingStrategy: DownsamplingStrategy,
+        volumeDownsamplingStrategy: DownsamplingStrategy,
+        segmentationDownsamplingStrategy: DownsamplingStrategy,
         resolution: ResolutionLevel,
     ) => {
         updatePerFormatEntry(extension, (entry) => ({
             ...entry,
             previewProcessing: {
-                downsamplingStrategy,
+                volumeDownsamplingStrategy,
+                segmentationDownsamplingStrategy,
                 resolution,
             },
         }));
@@ -113,13 +119,15 @@ export function useProcessingSettings() {
 
     const setPerFormatExportProcessingSettings = (
         extension: string,
-        downsamplingStrategy: DownsamplingStrategy,
+        volumeDownsamplingStrategy: DownsamplingStrategy,
+        segmentationDownsamplingStrategy: DownsamplingStrategy,
         resolution: ResolutionLevel,
     ) => {
         updatePerFormatEntry(extension, (entry) => ({
             ...entry,
             exportProcessing: {
-                downsamplingStrategy,
+                volumeDownsamplingStrategy,
+                segmentationDownsamplingStrategy,
                 resolution,
             },
         }));
