@@ -1,0 +1,30 @@
+.ghost[data-variant="ghost"] {
+    --ghost-shadow: 0 4px 12px rgb(0 0 0 / 0.125);
+
+    :where([data-mantine-color-scheme="dark"]) & {
+        --ghost-shadow: 0 0 0 1px rgb(255 255 255 / 0.06),
+            0 4px 12px rgb(255 255 255 / 0.1);
+    }
+
+    background-color: transparent;
+    color: var(--mantine-color-text);
+    border: 1px solid var(--mantine-color-default-border);
+    transition: transform 150ms ease, box-shadow 150ms ease;
+
+    &:hover:not(:disabled):not([data-disabled]) {
+        background-color: transparent;
+        color: var(--mantine-color-text);
+        box-shadow: var(--ghost-shadow);
+    }
+
+    &:active:not(:disabled):not([data-disabled]) {
+        box-shadow: none;
+    }
+
+    &:disabled,
+    &[data-disabled] {
+        background-color: transparent;
+        color: var(--mantine-color-disabled-color);
+        border-color: var(--mantine-color-disabled-border);
+    }
+}

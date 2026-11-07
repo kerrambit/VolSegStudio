@@ -5,7 +5,7 @@
  */
 
 import { Text } from "@mantine/core";
-import { Button } from "../../../components/common/button/Button";
+import { GhostButton } from "../../../components/common/buttons/GhostButton";
 
 interface SimpleDialogueContentProps {
     close: () => void;
@@ -28,14 +28,18 @@ export function SimpleDialogueContent({
             <div
                 style={{
                     display: "flex",
-                    justifyContent: "flex-end",
+                    justifyContent: "center",
                     gap: "8px",
                     marginTop: "1em",
                 }}
             >
-                <Button variant={"ghost"} onClick={() => close()}>
-                    Ok
-                </Button>
+                <GhostButton
+                    title="Closes the dialogue."
+                    size="sm"
+                    onClick={() => close()}
+                >
+                    OK
+                </GhostButton>
             </div>
         </>
     );

@@ -5,12 +5,11 @@
  */
 
 import type { FileRejection } from "@mantine/dropzone";
-import { Anchor, Text } from "@mantine/core";
+import { Anchor, Button, Text } from "@mantine/core";
 import { Dropzone } from "../../../components/common/dropzone/Dropzone.tsx";
 import { useWorkspaceManagement } from "../../workspace/hooks/useWorkspaceManagement.ts";
 import { loggerUi } from "../../logger/services/UiLoggingService.ts";
 import { pushWarningNotification } from "../../notifications/services/NotificationService.ts";
-import { Button } from "../../../components/common/button/Button.tsx";
 import { useRecentFilesStore } from "../../workspace/stores/recentFilesStore.ts";
 
 export default function WorkspaceLanding() {
@@ -119,31 +118,33 @@ function renderDropzoneButtonsArea(
                     {/* First button. */}
                     <div style={{ width: "100%", pointerEvents: "auto" }}>
                         <Button
-                            label="Create new project"
-                            tooltip="Creates new blank project."
-                            variant="ghost"
+                            variant="filled"
+                            title="Creates new blank project."
                             onClick={() => {
                                 loggerUi.info(
                                     "User's action on home page is: <Create new project>.",
                                 );
                                 createNewProjectInApp();
                             }}
-                        />
+                        >
+                            Create new project
+                        </Button>
                     </div>
 
                     {/* Second button. */}
                     <div style={{ width: "100%", pointerEvents: "auto" }}>
                         <Button
-                            label="Open file in viewer..."
-                            tooltip="Shows file explorer and opens given file in viewer."
-                            variant="ghost"
+                            variant="filled"
+                            title="Shows file explorer and opens given file in viewer."
                             onClick={() => {
                                 loggerUi.info(
                                     "User's action on home page is: <Open file in viewer...>.",
                                 );
                                 openFileExplorerAndLoadFileInApp();
                             }}
-                        />
+                        >
+                            Open file in viewer...
+                        </Button>
                     </div>
                 </div>
             </div>

@@ -65,7 +65,7 @@ export function InactiveViewCard(props: InactiveViewCardProps) {
                     size="sm"
                     fullWidth
                     leftSection={<IconClick size={16} stroke={1.75} />}
-                    title="Select this view."
+                    title="Selects this view."
                     onClick={() => {
                         if (props.onClick) {
                             props.onClick();

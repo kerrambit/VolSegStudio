@@ -54,7 +54,7 @@ export function ThemeSelector() {
                     <UnstyledButton
                         key={theme}
                         onClick={() => setColorTheme(theme)}
-                        title={`Choose color theme "${
+                        title={`Chooses  color theme "${
                             niceColorThemeNames[theme] || theme
                         }".`}
                         style={{

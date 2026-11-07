@@ -225,7 +225,7 @@ export function LocalAssetsTree() {
                                                 onClick={() =>
                                                     handleEditLocalAsset(asset)
                                                 }
-                                                tooltip="Edit local asset."
+                                                tooltip="Edits local asset."
                                             />
                                             <DeleteActionIcon
                                                 onClick={() =>
@@ -259,7 +259,7 @@ export function LocalAssetsTree() {
                     variant="filled"
                     size="sm"
                     onClick={handleAddLocalAssets}
-                    title="Open dialogue to add new local asset."
+                    title="Opens dialogue to add new local asset."
                     leftSection={<IconFile size={16} />}
                 >
                     Add...

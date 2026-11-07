@@ -95,8 +95,8 @@ export function ViewCard(props: ViewCardProps) {
                         size="sm"
                         disabled={props.canMoveUp === false}
                         onClick={() => props.onMoveUp?.()}
-                        aria-label="Move this view up."
-                        title="Move this view up."
+                        aria-label="Moves this view up."
+                        title="Moves this view up."
                     >
                         <IconChevronUp size={16} stroke={1.75} />
                     </ActionIcon>
@@ -106,8 +106,8 @@ export function ViewCard(props: ViewCardProps) {
                         size="sm"
                         disabled={props.canMoveDown === false}
                         onClick={() => props.onMoveDown?.()}
-                        aria-label="Move this view down."
-                        title="Move this view down."
+                        aria-label="Moves this view down."
+                        title="Moves this view down."
                     >
                         <IconChevronDown size={16} stroke={1.75} />
                     </ActionIcon>
@@ -116,14 +116,15 @@ export function ViewCard(props: ViewCardProps) {
                         variant="default"
                         size="sm"
                         onClick={() => props.onCopy?.()}
-                        aria-label="Create copy of this view."
-                        title="Create copy of this view."
+                        aria-label="Creates copy of this view."
+                        title="Creates copy of this view."
                     >
                         <IconCopy size={16} stroke={1.75} />
                     </ActionIcon>
 
                     <DeleteActionIcon
-                        tooltip="Delete this view."
+                        tooltip="Deletes this view."
+                        aria-label="Deletes this view."
                         variant="default"
                         onClick={() => props.onDelete?.()}
                     ></DeleteActionIcon>
@@ -136,7 +137,7 @@ export function ViewCard(props: ViewCardProps) {
                 <Group justify="center" w="100%" px="sm" py="xs">
                     <Thumbnail
                         onClick={() => props.onClick?.()}
-                        title="Click to select this view."
+                        title="Selects this view."
                         src={props.metadata.thumbnail}
                         alt={`${
                             props.metadata.title || `${props.index}. view`
@@ -176,7 +177,7 @@ export function ViewCard(props: ViewCardProps) {
                         variant="default"
                         size="sm"
                         leftSection={<IconTools size={16} stroke={1.75} />}
-                        title="Open View Builder sidebar."
+                        title="Opens View Builder sidebar."
                         onClick={() => props.onOpenBuilder?.(props.metadata.key!)}
                     >
                         Builder
@@ -185,7 +186,7 @@ export function ViewCard(props: ViewCardProps) {
                         variant="default"
                         size="sm"
                         leftSection={<IconSettings size={16} stroke={1.75} />}
-                        title="Open View Options dialogue."
+                        title="Opens View Options dialogue."
                         onClick={() => props.onOpenOptions?.(props.metadata.key!)}
                     >
                         Options

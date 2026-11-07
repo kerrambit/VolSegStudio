@@ -4,7 +4,8 @@
  * @author Marek Eibel
  */
 
-import { Button } from "../../../../components/common/button/Button";
+import { DangerButton } from "../../../../components/common/buttons/DangerButton";
+import { GhostButton } from "../../../../components/common/buttons/GhostButton";
 
 interface DeleteViewDialogueContentProps {
     viewName: string;
@@ -29,10 +30,12 @@ export function DeleteViewDialogueContent({
                     gap: "8px",
                 }}
             >
-                <Button variant={"ghost"} onClick={() => close(true)}>
-                    Yes
-                </Button>
-                <Button onClick={() => close(false)}>Cancel</Button>
+                <GhostButton title="Cancels the deletion." onClick={() => close(false)}>
+                    Cancel
+                </GhostButton>
+                <DangerButton title="Deletes the view." onClick={() => close(true)}>
+                    Delete view
+                </DangerButton>
             </div>
         </>
     );

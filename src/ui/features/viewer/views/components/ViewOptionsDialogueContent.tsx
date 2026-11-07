@@ -13,9 +13,9 @@ import {
     Divider,
     Textarea,
     Typography,
+    Button,
 } from "@mantine/core";
 import ReactMarkdown from "react-markdown";
-import { Button } from "../../../../components/common/button/Button";
 import { SegmentedController } from "../../../../components/common/segmented-controller/SegmentedController";
 import type { HexColor } from "../../../../lib/molstar";
 import { useAppearance } from "../../../apperance/hooks/useAppearance";
@@ -268,8 +268,7 @@ export function ViewOptionsDialogueContent(props: ViewOptionsDialogueContentProp
                 }}
             >
                 <Button
-                    label="Save"
-                    variant="primary"
+                    variant="filled"
                     onClick={() => {
                         let _description = description;
                         let _descriptionFormat = descriptionFormat as
@@ -289,8 +288,10 @@ export function ViewOptionsDialogueContent(props: ViewOptionsDialogueContentProp
                             description: _description,
                         });
                     }}
-                    tooltip="Save view options."
-                />
+                    title="Saves view options."
+                >
+                    Save
+                </Button>
             </div>
         </div>
     );

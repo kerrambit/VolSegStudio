@@ -4,12 +4,12 @@
  * @author Marek Eibel
  */
 
-import { Divider, Text } from "@mantine/core";
-import { Button } from "../../../components/common/button/Button";
+import { Button, Divider, Text } from "@mantine/core";
 import { pushInfoNotification } from "../../notifications/services/NotificationService";
 import { UiLocalStorageService } from "../../persistence/services/UiLocalStorageService";
 import { SchemeSelector } from "./SchemeSelector";
 import { ThemeSelector } from "./ThemeSelector";
+import { IconTrash } from "@tabler/icons-react";
 
 export function UiSettingsForm() {
     return (
@@ -47,10 +47,8 @@ export function UiSettingsForm() {
             </Text>
             <div>
                 <Button
-                    variant="ghost"
-                    size="medium"
-                    label="Clear"
-                    tooltip="Clears all temporary UI settings."
+                    variant="default"
+                    title="Clears all temporary UI settings."
                     onClick={() => {
                         // TODO: this clears whole LocalStorage, if there are things outside UI, they will be cleared too
                         UiLocalStorageService.clear();
@@ -58,7 +56,10 @@ export function UiSettingsForm() {
                             "Temporary UI settings has been successfully cleared.",
                         );
                     }}
-                />
+                    leftSection={<IconTrash size={16} />}
+                >
+                    Clear
+                </Button>
             </div>
         </div>
     );

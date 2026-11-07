@@ -5,17 +5,17 @@
  */
 
 import { useCallback, useState } from "react";
-import { Button } from "../../../../components/common/button/Button";
 import { MVSData } from "molstar/lib/extensions/mvs/mvs-data";
 import { pushWarningNotification } from "../../../notifications/services/NotificationService";
 import { PreformattedText } from "../../../../components/common/preformatted-text/PreformattedText";
 import { useRegimeStore } from "../../../regime/stores/regimeStore";
+import { CopyButton } from "../../../../components/common/buttons/CopyButton";
 
 interface ShowMVSTreeDialogueContentProps {
     close: () => void;
 }
 
-export function ShowMVSTreeDialogueContent({ close }: ShowMVSTreeDialogueContentProps) {
+export function ShowMVSTreeDialogueContent({}: ShowMVSTreeDialogueContentProps) {
     // Use regime.
     const regime = useRegimeStore((state) => state.regime);
 
@@ -64,20 +64,10 @@ export function ShowMVSTreeDialogueContent({ close }: ShowMVSTreeDialogueContent
                     paddingTop: "1em",
                 }}
             >
-                <Button
-                    variant="secondary"
-                    size="small"
-                    tooltip="Copies the MVS tree."
-                    label={copied ? "✓ Copied" : "Copy"}
+                <CopyButton
+                    title="Copies the MVS tree."
+                    copied={copied}
                     onClick={handleCopy}
-                />
-
-                <Button
-                    variant="secondary"
-                    size="small"
-                    tooltip="Closes the dialogue window."
-                    label="OK"
-                    onClick={close}
                 />
             </div>
         </div>
