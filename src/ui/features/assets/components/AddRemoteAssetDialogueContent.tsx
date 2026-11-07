@@ -4,9 +4,8 @@
  * @author Marek Eibel
  */
 
-import { Text, Select } from "@mantine/core";
+import { Text, Select, Button } from "@mantine/core";
 import { useState } from "react";
-import { Button } from "../../../components/common/button/Button";
 import { UnstyledTextInput } from "../../../components/common/input/UnstyledTextInput";
 import { getExtensionFromUrl } from "../../../utils/fileDataUtils";
 import {
@@ -182,6 +181,7 @@ export function AddRemoteAssetDialogueContent(props: AddRemoteAssetDialogueConte
                 }}
             >
                 <Button
+                    variant="filled"
                     disabled={
                         !remoteUrl ||
                         remoteUrl.trim() === "" ||
@@ -196,7 +196,7 @@ export function AddRemoteAssetDialogueContent(props: AddRemoteAssetDialogueConte
                             extension: remoteUrlExtension!,
                         });
                     }}
-                    tooltip="Save remote asset."
+                    title="Save remote asset."
                 >
                     Save
                 </Button>

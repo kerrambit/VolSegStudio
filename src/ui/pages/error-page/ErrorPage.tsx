@@ -6,8 +6,8 @@
 
 import { useRouteError, isRouteErrorResponse } from "react-router-dom";
 import { loggerUi } from "../../features/logger/services/UiLoggingService";
-import { Button } from "../../components/common/button/Button";
 import { IconAlertHexagonFilled } from "@tabler/icons-react";
+import { Button } from "@mantine/core";
 
 export const ErrorPage = () => {
     // Use route error hook.
@@ -46,7 +46,6 @@ export const ErrorPage = () => {
             >
                 <IconAlertHexagonFilled size={"8em"} />
             </div>
-
             {/* Header. */}
             <h1
                 style={{
@@ -57,7 +56,6 @@ export const ErrorPage = () => {
             >
                 Oops! Something went wrong...
             </h1>
-
             {/* Apology paragraph. */}
             <p
                 style={{
@@ -68,7 +66,6 @@ export const ErrorPage = () => {
                 We apologize for the inconvenience. The application encountered an
                 unexpected error and needs to be restarted.
             </p>
-
             {/* Error box. */}
             <div
                 style={{
@@ -91,13 +88,14 @@ export const ErrorPage = () => {
                     {errorMessage}
                 </code>
             </div>
-
             {/* Button to restart the app. */}
             <Button
-                label="Restart the app"
-                tooltip="Restarts the application."
+                variant="default"
+                title="Restarts the application."
                 onClick={() => window.location.reload()}
-            />
+            >
+                Restart the app
+            </Button>
         </div>
     );
 };

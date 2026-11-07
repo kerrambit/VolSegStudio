@@ -4,7 +4,8 @@
  * @author Marek Eibel
  */
 
-import { Button } from "../../../components/common/button/Button";
+import { GhostButton } from "../../../components/common/buttons/GhostButton";
+import { DangerButton } from "../../../components/common/buttons/DangerButton";
 
 interface DeleteAssetDialogueContentProps {
     assetName: string;
@@ -35,10 +36,12 @@ export function DeleteAssetDialogueContent({
                     gap: "8px",
                 }}
             >
-                <Button variant={"ghost"} onClick={() => close(false)}>
+                <GhostButton title="Cancels the deletion." onClick={() => close(false)}>
                     Cancel
-                </Button>
-                <Button onClick={() => close(true)}>Delete</Button>
+                </GhostButton>
+                <DangerButton title="Deletes the asset." onClick={() => close(true)}>
+                    Delete asset
+                </DangerButton>
             </div>
         </>
     );

@@ -5,7 +5,7 @@
  */
 
 import { useState } from "react";
-import { Select, Text } from "@mantine/core";
+import { Button, Select, Text } from "@mantine/core";
 import { UnstyledTextInput } from "../../../components/common/input/UnstyledTextInput";
 import { PathSegmentsBuilder } from "../../../components/common/path-segments-builder/PathSegmentsBuilder";
 import { compileFinalPath } from "../../../components/common/path-segments-builder/compileFinalPath";
@@ -14,7 +14,6 @@ import {
     addExtensionToFilename,
     getExtensionFromFileName,
 } from "../../../utils/fileDataUtils";
-import { Button } from "../../../components/common/button/Button";
 
 export interface EditAssetDialogueReturnType {
     relativePath: string;
@@ -171,7 +170,7 @@ export function EditAssetDialogueContent(props: EditAssetDialogueContentProps) {
                             newFileName: newFileName,
                         });
                     }}
-                    tooltip="Save local asset."
+                    title="Saves local asset(s)."
                 >
                     Save
                 </Button>

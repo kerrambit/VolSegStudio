@@ -5,8 +5,7 @@
  */
 
 import { useState } from "react";
-import { Loader, Select, Text } from "@mantine/core";
-import { Button } from "../../../components/common/button/Button";
+import { Button, Select, Text } from "@mantine/core";
 import {
     checkOffersProcessing,
     checkRequiresProcessing,
@@ -22,6 +21,7 @@ import {
     addExtensionToFilename,
 } from "../../../utils/fileDataUtils";
 import { useProcessingSettings } from "../../settings/hooks/useProcessingSettings";
+import { GhostButton } from "../../../components/common/buttons/GhostButton";
 
 export interface AddLocalAssetDialogueFileReturnType {
     file: FileData;
@@ -92,9 +92,9 @@ export function AddLocalAssetDialogueContent({
                 }}
             >
                 {/* Choose file assets button. */}
-                <Button
-                    variant="ghost"
-                    tooltip="Choose file(s)."
+                <GhostButton
+                    title="Chooses files to load as local assets."
+                    loading={fileLoading}
                     onClick={async () => {
                         setFileLoading(true);
                         const result = await window.electron.openFileExplorer(
@@ -122,17 +122,9 @@ export function AddLocalAssetDialogueContent({
                     }}
                 >
                     Choose file(s)...
-                </Button>
+                </GhostButton>
             </div>
-            {/* Loader. */}
-            {fileLoading && (
-                <div
-                    title="Loading the file(s)..."
-                    style={{ display: "flex", justifyContent: "center" }}
-                >
-                    <Loader />
-                </div>
-            )}
+
             {/* Chosen file assets label. */}
             <div style={{ display: "flex", alignItems: "center", gap: "1em" }}>
                 <Text size="sm" style={{ minWidth: "9em" }}>
@@ -294,6 +286,7 @@ export function AddLocalAssetDialogueContent({
                 )}
 
                 <Button
+                    variant="filled"
                     disabled={
                         files.length === 0 ||
                         isPathInvalid ||
@@ -330,7 +323,7 @@ export function AddLocalAssetDialogueContent({
                             onLoadProcessing: onLoadProcessing,
                         });
                     }}
-                    tooltip="Save local asset(s)."
+                    title="Saves local asset(s)."
                 >
                     Save
                 </Button>

@@ -7,7 +7,6 @@
 import { useState } from "react";
 import { Collapse, Loader, Text } from "@mantine/core";
 import { IconAlertTriangle, IconCheck, IconX } from "@tabler/icons-react";
-import { Button } from "../../../../components/common/button/Button";
 import { CollapseTrigger } from "../../../../components/common/collapse-trigger/CollapseTriger";
 import { useAppearance } from "../../../apperance/hooks/useAppearance";
 import { UiLocalStorageService } from "../../../persistence/services/UiLocalStorageService";
@@ -15,10 +14,11 @@ import { useDialogueStore } from "../../../dialogue/stores/dialogueStore";
 import type { ProcessingJob } from "../../domain/ProcessingJob";
 import { useProcessingStore } from "../../stores/processingStore";
 import { ProcessingStagesList } from "./ProcessingStagesList";
-
-import "./ProcessingJobCard.css";
 import { ErrorDialogueContent } from "../../../dialogue/components/ErrorDialogueContent";
 import { SimpleDialogueContent } from "../../../dialogue/components/SimpleDialogueContent";
+import { DeleteActionIcon } from "../../../../components/common/actionables/actions-icons/DeleteActionIcon";
+
+import "./ProcessingJobCard.css";
 
 export type ProcessingJobCardProps = {
     job: ProcessingJob;
@@ -56,7 +56,7 @@ export function ProcessingJobCard({ job }: ProcessingJobCardProps) {
                 marginBottom: "0.5em",
             }}
         >
-            {/* Processed filename as title and collapse trigger for stages list below. */}
+            {/* Processed filename as title, stages collapse trigger and clear action. */}
             <div
                 style={{
                     width: "100%",
@@ -73,21 +73,38 @@ export function ProcessingJobCard({ job }: ProcessingJobCardProps) {
                 >
                     {job.file.name}
                 </Text>
-                <CollapseTrigger
-                    title={"Stages"}
-                    titleTextSize="sm"
-                    expanded={isStagesListExpanded}
-                    onClick={() => {
-                        setStagesListExpanded((prev) => {
-                            const nextState = !prev;
-                            UiLocalStorageService.ProcessingJobs.setJobExpandedState(
-                                job.jobId,
-                                nextState,
-                            );
-                            return nextState;
-                        });
+
+                <div
+                    style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.5em",
                     }}
-                ></CollapseTrigger>
+                >
+                    <CollapseTrigger
+                        title={"Stages"}
+                        titleTextSize="sm"
+                        expanded={isStagesListExpanded}
+                        onClick={() => {
+                            setStagesListExpanded((prev) => {
+                                const nextState = !prev;
+                                UiLocalStorageService.ProcessingJobs.setJobExpandedState(
+                                    job.jobId,
+                                    nextState,
+                                );
+                                return nextState;
+                            });
+                        }}
+                    ></CollapseTrigger>
+
+                    {/* Clears the finished job. */}
+                    {!isJobActive && (
+                        <DeleteActionIcon
+                            tooltip="Clears the finished job."
+                            onClick={() => clearJob(job.jobId)}
+                        />
+                    )}
+                </div>
             </div>
 
             {/* Main body of the card. */}
@@ -124,7 +141,7 @@ export function ProcessingJobCard({ job }: ProcessingJobCardProps) {
                 {isSuccess && (
                     <IconCheck
                         className="processingJob__icon greenGlow"
-                        title="Show processed files."
+                        title="Shows processed files."
                         onClick={async () => {
                             await useDialogueStore.getState().showDialogue({
                                 title: `Processed files of file ${job.file.name}`,
@@ -144,7 +161,7 @@ export function ProcessingJobCard({ job }: ProcessingJobCardProps) {
                             });
                         }}
                         color="green"
-                        size={"3em"}
+                        size={"2em"}
                     />
                 )}
 
@@ -152,7 +169,7 @@ export function ProcessingJobCard({ job }: ProcessingJobCardProps) {
                 {isWarning && (
                     <IconAlertTriangle
                         className="processingJob__icon yellowGlow"
-                        title="Show warning details."
+                        title="Shows warning details."
                         onClick={async () => {
                             await useDialogueStore.getState().showDialogue({
                                 title: `Processing warning of file ${job.file.name}`,
@@ -168,7 +185,7 @@ export function ProcessingJobCard({ job }: ProcessingJobCardProps) {
                             });
                         }}
                         color="gold"
-                        size={"3em"}
+                        size={"2em"}
                     />
                 )}
 
@@ -176,7 +193,7 @@ export function ProcessingJobCard({ job }: ProcessingJobCardProps) {
                 {isError && (
                     <IconX
                         className="processingJob__icon redGlow"
-                        title="Show error details."
+                        title="Shows error details."
                         onClick={async () => {
                             await useDialogueStore.getState().showDialogue({
                                 title: `Processing error of file ${job.file.name}`,
@@ -191,30 +208,10 @@ export function ProcessingJobCard({ job }: ProcessingJobCardProps) {
                             });
                         }}
                         color="red"
-                        size={"3em"}
+                        size={"2em"}
                     />
                 )}
             </div>
-
-            {/* Button to clear the job. */}
-            {!isJobActive && (
-                <div
-                    style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        width: "50%",
-                    }}
-                >
-                    <Button
-                        size="small"
-                        variant="ghost"
-                        tooltip="Clears the finished job. Cannot be shown again!"
-                        onClick={() => clearJob(job.jobId)}
-                    >
-                        Clear finished job
-                    </Button>
-                </div>
-            )}
         </div>
     );
 }

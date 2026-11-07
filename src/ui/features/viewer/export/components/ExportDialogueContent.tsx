@@ -33,6 +33,7 @@ import { UiLocalStorageService } from "../../../persistence/services/UiLocalStor
 import { FileOverrideWarningMessage } from "./FileOverrideWarningMessage";
 import type { ProcessVolumeRequestWithoutFilepathsAndBundlingApproach } from "../../../processing/api/volume/ProcessVolumeRequest";
 import { useRegimeStore } from "../../../regime/stores/regimeStore";
+import { GhostButton } from "../../../../components/common/buttons/GhostButton";
 
 /**
  * Result of the export processing properties dialogue.
@@ -64,11 +65,7 @@ export interface ExportDialogueResultType {
  * Checks if the given downsampling strategy maps to one of the simple "quality" levels.
  */
 function isSimpleStrategy(strategy: DownsamplingStrategy): boolean {
-    return (
-        (Object.values(DOWNSAMPLING_LEVEL_TO_STRATEGY) as string[]).includes(
-            strategy,
-        )
-    );
+    return (Object.values(DOWNSAMPLING_LEVEL_TO_STRATEGY) as string[]).includes(strategy);
 }
 
 /**
@@ -132,10 +129,9 @@ export function ExportDialogueContent({
     const [enableVolumeDownsampling, setEnableVolumeDownsampling] = useState(
         effectiveExportProcessing.volumeDownsamplingMethod !== "null",
     );
-    const [enableSegmentationDownsampling, setEnableSegmentationDownsampling] =
-        useState(
-            effectiveExportProcessing.segmentationDownsamplingMethod !== "null",
-        );
+    const [enableSegmentationDownsampling, setEnableSegmentationDownsampling] = useState(
+        effectiveExportProcessing.segmentationDownsamplingMethod !== "null",
+    );
 
     // Check if the configured downsampling methods map to a simple "quality" level.
     // If not (e.g. "smoothing"), we will show the full strategy select even in simple mode.
@@ -154,9 +150,7 @@ export function ExportDialogueContent({
         );
     const [segmentationDownsamplingLevel, setSegmentationDownsamplingLevel] =
         useState<DownsamplingLevel>(
-            toSimpleLevel(
-                effectiveExportProcessing.segmentationDownsamplingMethod,
-            ),
+            toSimpleLevel(effectiveExportProcessing.segmentationDownsamplingMethod),
         );
     const downsamplingLevelOptions = getDownsamplingLevelOptions();
 
@@ -359,8 +353,7 @@ export function ExportDialogueContent({
                             </List.Item>
                         )}
                         <List.Item>
-                            Segmentation sources are serialized into the "mrc"
-                            format.
+                            Segmentation sources are serialized into the "mrc" format.
                         </List.Item>
                     </List>
                 </div>
@@ -532,9 +525,7 @@ export function ExportDialogueContent({
                                                     }
                                                     placeholder="Select downsampling..."
                                                     size="sm"
-                                                    disabled={
-                                                        !enableVolumeDownsampling
-                                                    }
+                                                    disabled={!enableVolumeDownsampling}
                                                     comboboxProps={{
                                                         withinPortal: true,
                                                         zIndex: 10000,
@@ -553,9 +544,7 @@ export function ExportDialogueContent({
                                                     }
                                                     placeholder="Select a strategy..."
                                                     size="sm"
-                                                    disabled={
-                                                        !enableVolumeDownsampling
-                                                    }
+                                                    disabled={!enableVolumeDownsampling}
                                                     comboboxProps={{
                                                         withinPortal: true,
                                                         zIndex: 10000,
@@ -647,9 +636,7 @@ export function ExportDialogueContent({
                                         >
                                             <Checkbox
                                                 label="Downsample segmentation"
-                                                checked={
-                                                    enableSegmentationDownsampling
-                                                }
+                                                checked={enableSegmentationDownsampling}
                                                 onChange={(e) =>
                                                     setEnableSegmentationDownsampling(
                                                         e.currentTarget.checked,
@@ -661,9 +648,7 @@ export function ExportDialogueContent({
                                                 <Select
                                                     label="Downsampling strength:"
                                                     data={downsamplingLevelOptions}
-                                                    value={
-                                                        segmentationDownsamplingLevel
-                                                    }
+                                                    value={segmentationDownsamplingLevel}
                                                     allowDeselect={false}
                                                     onChange={(value) =>
                                                         setSegmentationDownsamplingLevel(
@@ -736,9 +721,9 @@ export function ExportDialogueContent({
                                 enabled={false}
                                 style={{ flexGrow: 1 }}
                             />
-                            <Button
-                                variant="outline"
+                            <GhostButton
                                 size="xs"
+                                title="Opens a file explorer."
                                 onClick={async () => {
                                     const selected =
                                         await window.electron.selectDirectory(outputPath);
@@ -754,7 +739,7 @@ export function ExportDialogueContent({
                                 }}
                             >
                                 Browse...
-                            </Button>
+                            </GhostButton>
                         </div>
                         <div
                             style={{
@@ -854,10 +839,15 @@ export function ExportDialogueContent({
 
             {/* Actions. */}
             <Group justify="center" mt="xl">
-                <Button variant="default" onClick={() => close(undefined)}>
+                <Button
+                    title="Closes the dialogue."
+                    variant="default"
+                    onClick={() => close(undefined)}
+                >
                     Close
                 </Button>
                 <Button
+                    title="Starts the export."
                     variant="filled"
                     disabled={!filename}
                     onClick={() => {

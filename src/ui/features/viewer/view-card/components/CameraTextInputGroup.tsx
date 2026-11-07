@@ -64,8 +64,8 @@ export function CameraTextInputGroup(props: CameraTextInputGroupProps) {
                         <ActionIcon
                             variant="transparent"
                             size="xs"
-                            aria-label={`Copy camera ${field.label.toLowerCase()}.`}
-                            title={`Copy camera ${field.label.toLowerCase()}.`}
+                            aria-label={`Copies camera ${field.label.toLowerCase()}.`}
+                            title={`Copies camera ${field.label.toLowerCase()}.`}
                             onClick={async () => {
                                 try {
                                     await navigator.clipboard.writeText(field.value);

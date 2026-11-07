@@ -1,14 +1,10 @@
-/**
- * Copyright (c) 2025-now VolSegStudio contributors, licensed under MIT, See LICENSE file for more info.
- *
- * @author Marek Eibel
- */
-
-import { Button } from "../../../components/common/button/Button";
+import { Group, Text } from "@mantine/core";
+import { DangerButton } from "../../../components/common/buttons/DangerButton";
+import { GhostButton } from "../../../components/common/buttons/GhostButton";
 
 interface ConfirmationDialogueContentProps {
     close: (value?: boolean) => void;
-    doYouReallyWantToQuestion: string | undefined;
+    doYouReallyWantToQuestion?: string;
 }
 
 export function ConfirmationDialogueContent({
@@ -17,22 +13,18 @@ export function ConfirmationDialogueContent({
 }: ConfirmationDialogueContentProps) {
     return (
         <>
-            <p style={{ marginBottom: "1rem" }}>
+            <Text mb="md">
                 You might have unsaved changes. {doYouReallyWantToQuestion}
-            </p>
+            </Text>
 
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    gap: "8px",
-                }}
-            >
-                <Button variant={"ghost"} onClick={() => close(true)}>
-                    Ok
-                </Button>
-                <Button onClick={() => close(false)}>Cancel</Button>
-            </div>
+            <Group justify="flex-end">
+                <GhostButton title="No." onClick={() => close(false)} data-autofocus>
+                    No
+                </GhostButton>
+                <DangerButton title="Yes." onClick={() => close(true)}>
+                    Yes
+                </DangerButton>
+            </Group>
         </>
     );
 }

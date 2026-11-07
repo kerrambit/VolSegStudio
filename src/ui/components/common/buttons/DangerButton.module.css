@@ -1,0 +1,33 @@
+.danger[data-variant="danger"] {
+    --danger-shadow: 0 4px 12px rgb(224 49 49 / 0.3);
+
+    :where([data-mantine-color-scheme="dark"]) & {
+        --danger-shadow: 0 4px 12px rgb(250 82 82 / 0.35);
+    }
+
+    background-color: var(--mantine-color-red-7);
+    color: var(--mantine-color-white);
+    border: 1px solid transparent;
+    transition: transform 150ms ease, box-shadow 150ms ease;
+
+    &:hover:not(:disabled):not([data-disabled]) {
+        background-color: var(--mantine-color-red-7);
+        color: var(--mantine-color-white);
+        box-shadow: var(--danger-shadow);
+    }
+
+    &:active:not(:disabled):not([data-disabled]) {
+        box-shadow: none;
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--mantine-color-red-4);
+        outline-offset: 2px;
+    }
+
+    &:disabled,
+    &[data-disabled] {
+        background-color: var(--mantine-color-disabled);
+        color: var(--mantine-color-disabled-color);
+    }
+}

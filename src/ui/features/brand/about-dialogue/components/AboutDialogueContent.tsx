@@ -4,11 +4,12 @@
  * @author Marek Eibel
  */
 
-import { Badge, Button } from "@mantine/core";
+import { Badge } from "@mantine/core";
 import { useState, useCallback } from "react";
 import { useAppearance } from "../../../apperance/hooks/useAppearance";
 import { useEnvironment } from "../../../environment/hooks/useEnvironment";
 import desktopIcon from "../../../../../assets/desktopIcon.png";
+import { CopyButton } from "../../../../components/common/buttons/CopyButton";
 
 interface AboutDialogueContentProps {
     close: () => void;
@@ -69,7 +70,7 @@ function Section({ label, children }: { label: string; children: React.ReactNode
 }
 
 // TODO: make from this a more generic component
-export function AboutDialogueContent({ close }: AboutDialogueContentProps) {
+export function AboutDialogueContent({}: AboutDialogueContentProps) {
     // Use UI appearance.
     const { colorTheme } = useAppearance();
 
@@ -211,17 +212,11 @@ export function AboutDialogueContent({ close }: AboutDialogueContentProps) {
                     paddingTop: "2em",
                 }}
             >
-                <Button
-                    size="small"
+                <CopyButton
                     title="Copies the build information."
                     onClick={handleCopy}
-                >
-                    {copied ? "✓ Copied" : "Copy"}
-                </Button>
-
-                <Button size="small" title="Closes the dialogue window." onClick={close}>
-                    OK
-                </Button>
+                    copied={copied}
+                ></CopyButton>
             </div>
         </div>
     );

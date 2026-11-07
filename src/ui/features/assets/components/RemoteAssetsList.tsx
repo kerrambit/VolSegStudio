@@ -202,7 +202,7 @@ export function RemoteAssetsList() {
                                 <>
                                     <EditActionIcon
                                         onClick={() => handleEditRemoteAsset(asset)}
-                                        tooltip="Edit remote asset."
+                                        tooltip="Edits remote asset."
                                     />
                                     <DeleteActionIcon
                                         onClick={() => handleDeleteRemoteAsset(asset)}
@@ -233,7 +233,7 @@ export function RemoteAssetsList() {
                     variant="filled"
                     size="sm"
                     onClick={handleAddRemoteAsset}
-                    title="Add new remote asset."
+                    title="Opens dialogue to add new remote asset."
                     leftSection={<IconWorldWww size={16} />}
                 >
                     Add...

@@ -5,8 +5,7 @@
  */
 
 import { useMemo } from "react";
-import { Text } from "@mantine/core";
-import { Button } from "../../../../components/common/button/Button";
+import { Button, Text } from "@mantine/core";
 import { useRegimeStore } from "../../../regime/stores/regimeStore";
 
 interface ShowSourceTreeHistoryDialogueContentProps {
@@ -63,12 +62,12 @@ export function ShowSourceTreeHistoryDialogueContent({
                 }}
             >
                 <Button
-                    variant="secondary"
-                    size="small"
-                    tooltip="Closes the dialogue window."
-                    label="OK"
+                    variant="filled"
+                    title="Closes the dialogue window."
                     onClick={close}
-                />
+                >
+                    OK
+                </Button>
             </div>
         </div>
     );
