@@ -27,7 +27,7 @@ export function ViewerEditor() {
             <LoadingOverlay
                 visible={molstarInitializing || molstarBusy}
                 zIndex={10000}
-                overlayProps={{ radius: "sm", blur: 2, style: { cursor: "progress" } }}
+                overlayProps={{ radius: "sm", blur: 2, style: { cursor: "wait" } }}
                 loaderProps={{
                     children: (
                         <Stack align="center" gap="xs">
