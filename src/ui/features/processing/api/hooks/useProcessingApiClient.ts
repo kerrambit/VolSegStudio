@@ -16,6 +16,7 @@ type WebSocketEndpoints = typeof webSocketEndpoints;
  * Prefixes every web socket endpoint builder with the web socket base URL,
  * keeping the original parameters and names type-safe.
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function bindWebSocketEndpoints<T extends Record<string, (...args: any[]) => string>>(
     baseUrl: string,
     endpoints: T,

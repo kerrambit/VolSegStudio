@@ -353,9 +353,7 @@ export function bindViewerMenu(): Menu {
                             showCloseButton: true,
                             width: "1000px",
                             maxWidth: "1400px",
-                            content: (close) => (
-                                <ShowMVSTreeDialogueContent close={close} />
-                            ),
+                            content: () => <ShowMVSTreeDialogueContent />,
                         });
                     } else {
                         pushWarningNotification(
@@ -488,7 +486,7 @@ export function bindViewerMenu(): Menu {
                         title: "About",
                         showCloseButton: true,
                         closeOnEscapeEntered: true,
-                        content: (close) => <AboutDialogueContent close={close} />,
+                        content: () => <AboutDialogueContent />,
                     });
                 }),
             ]),

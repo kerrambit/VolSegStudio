@@ -11,7 +11,6 @@ import type { ProcessVolumeRequestWithoutFilepaths } from "../../api/volume/Proc
 import { useProcessVolume } from "../../api/volume/useProcessVolume";
 import { useProcessingTemporaryDirectory } from "../../temporary_directory/hooks/useProcessingTemporaryDirectory";
 
-``;
 export function useStartFileProcessingForExport() {
     // Use processing.
     const processVolume = useProcessVolume();

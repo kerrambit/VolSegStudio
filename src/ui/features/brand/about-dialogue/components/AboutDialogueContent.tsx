@@ -11,10 +11,6 @@ import { useEnvironment } from "../../../environment/hooks/useEnvironment";
 import desktopIcon from "../../../../../assets/desktopIcon.png";
 import { CopyButton } from "../../../../components/common/buttons/CopyButton";
 
-interface AboutDialogueContentProps {
-    close: () => void;
-}
-
 interface Row {
     label: string;
     value: string;
@@ -70,7 +66,7 @@ function Section({ label, children }: { label: string; children: React.ReactNode
 }
 
 // TODO: make from this a more generic component
-export function AboutDialogueContent({}: AboutDialogueContentProps) {
+export function AboutDialogueContent() {
     // Use UI appearance.
     const { colorTheme } = useAppearance();
 

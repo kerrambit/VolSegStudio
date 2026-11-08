@@ -36,7 +36,7 @@ export function FileOverrideWarningMessage({
                 } else {
                     setStatus("clear");
                 }
-            } catch (error) {
+            } catch {
                 if (isMounted) setStatus("error");
             }
         };

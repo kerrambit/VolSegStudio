@@ -59,13 +59,7 @@ export function useProcessVolumeSocket(
         }
 
         onProgress(message.stage);
-    }, [
-        lastJsonMessage,
-        webSocketEndpoints.process_volume(jobId),
-        onDone,
-        onError,
-        onProgress,
-    ]);
+    }, [lastJsonMessage, jobId, webSocketEndpoints, onDone, onError, onProgress]);
 
     return { readyState };
 }

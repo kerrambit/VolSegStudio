@@ -98,8 +98,11 @@ export function updateSnapshotBackgroundColorInManager(
         : undefined;
 
     const snapshot = entry.snapshot;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const canvas3d = (snapshot.canvas3d ??= { props: {} } as any);
     const props = (canvas3d.props ??= {});
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const renderer = (props.renderer ??= {} as any);
 
     if (numericColor !== undefined) {
