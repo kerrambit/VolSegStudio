@@ -100,7 +100,7 @@ export function ProcessingJobCard({ job }: ProcessingJobCardProps) {
                     {/* Clears the finished job. */}
                     {!isJobActive && (
                         <DeleteActionIcon
-                            tooltip="Clears the finished job."
+                            tooltip="Clears finished job."
                             onClick={() => clearJob(job.jobId)}
                         />
                     )}

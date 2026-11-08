@@ -11,11 +11,7 @@ import { PreformattedText } from "../../../../components/common/preformatted-tex
 import { useRegimeStore } from "../../../regime/stores/regimeStore";
 import { CopyButton } from "../../../../components/common/buttons/CopyButton";
 
-interface ShowMVSTreeDialogueContentProps {
-    close: () => void;
-}
-
-export function ShowMVSTreeDialogueContent({}: ShowMVSTreeDialogueContentProps) {
+export function ShowMVSTreeDialogueContent() {
     // Use regime.
     const regime = useRegimeStore((state) => state.regime);
 

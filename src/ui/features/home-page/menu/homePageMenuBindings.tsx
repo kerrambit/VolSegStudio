@@ -151,7 +151,7 @@ export function bindMainMenu(): Menu {
                         title: "About",
                         showCloseButton: true,
                         closeOnEscapeEntered: true,
-                        content: (close) => <AboutDialogueContent close={close} />,
+                        content: () => <AboutDialogueContent />,
                     });
                 }),
             ]),

@@ -4,17 +4,19 @@
  * @author Marek Eibel
  */
 
-import { LoadingOverlay } from "@mantine/core";
+import { Loader, LoadingOverlay, Stack, Text } from "@mantine/core";
 import { useMolstarInit } from "../hooks/useMolstarInit";
 import { SceneManager } from "../../scene-manager/components/SceneManager";
 import { ProcessingJobs } from "../../../processing/jobs/components/ProcessingJobs";
 import { useMolstarTheme } from "../hooks/useMolstarTheme";
+import { useMolstarBusy } from "../hooks/useMolstarBusy";
 
 import "./ViewerEditor.css";
 
 export function ViewerEditor() {
     // Use Molstar.
     const { parentRef, molstarInitializing, molstarExpanded } = useMolstarInit();
+    const molstarBusy = useMolstarBusy(!molstarInitializing);
 
     // Use Molstar theme.
     useMolstarTheme();
@@ -23,10 +25,19 @@ export function ViewerEditor() {
     return (
         <div style={{ position: "relative", display: "flex", height: "100%" }}>
             <LoadingOverlay
-                visible={molstarInitializing}
-                zIndex={1000}
-                overlayProps={{ radius: "sm", blur: 2 }}
-                loaderProps={{ type: "oval" }}
+                visible={molstarInitializing || molstarBusy}
+                zIndex={10000}
+                overlayProps={{ radius: "sm", blur: 2, style: { cursor: "wait" } }}
+                loaderProps={{
+                    children: (
+                        <Stack align="center" gap="xs">
+                            <Loader type="oval" />
+                            <Text size="md" fw={600}>
+                                Rendering view in Mol*...
+                            </Text>
+                        </Stack>
+                    ),
+                }}
             />
             <ProcessingJobs />
             <SceneManager

@@ -16,7 +16,6 @@ import {
     useLiveCameraState,
     type Base64Png,
     type HexColor,
-    isMolstarReloading,
 } from "../../../../lib/molstar";
 import { pushWarningNotification } from "../../../notifications/services/NotificationService";
 
@@ -52,7 +51,7 @@ export function useViewCard(props: ViewCardProps) {
     // This is an explicit, one-shot reaction to a live event — not an effect that infers change by diffing state - so it can't loop.
     useEffect(() => {
         const sub = getBackgroundColorChangeSubscription((color) => {
-            if (isMolstarReloading() || color === undefined || color === null) {
+            if (color === undefined || color === null) {
                 return;
             }
             const hex = Color.toHexStyle(color);

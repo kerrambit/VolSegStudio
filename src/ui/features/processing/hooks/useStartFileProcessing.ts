@@ -13,6 +13,7 @@ import { useProcessVolume } from "../api/volume/useProcessVolume";
 import type { ProcessingJobPurpose } from "../domain/ProcessingJob";
 import { useProcessingStore } from "../stores/processingStore";
 import { useProcessingTemporaryDirectory } from "../temporary_directory/hooks/useProcessingTemporaryDirectory";
+import { getErrorMessage } from "../../../utils/getErrorMessage";
 
 export function useStartFileProcessing() {
     // Use processing.
@@ -64,12 +65,13 @@ export function useStartFileProcessing() {
                 }
 
                 loggerUi.info(`Processing job <${result.job_id}> has started.`);
-            } catch (err: any) {
+            } catch (error) {
+                const message = getErrorMessage(error);
                 pushErrorNotification(
-                    `Processing of file "${fileToProcess.name}" could not be started, because: "${err.message}"! You might need to restart the application and try processing once more.`,
+                    `Processing of file "${fileToProcess.name}" could not be started, because: "${message}"! You might need to restart the application and try processing once more.`,
                 );
                 loggerUi.error(
-                    `Processing of file "${fileToProcess.path}" failed! See details: <${err.message}>.`,
+                    `Processing of file "${fileToProcess.path}" failed! See details: <${message}>.`,
                 );
             }
         },

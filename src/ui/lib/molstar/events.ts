@@ -82,3 +82,21 @@ export function getSnapshotChangeSubscription(
 
     return subscription;
 }
+
+/**
+ * Creates a subscription to the event: Molstar is busy.
+ * @param callback event to run
+ * @warning Take care of the unsubscription.
+ * @returns `Subscription` object
+ */
+export function getBusySubscription(callback: (isBusy: boolean) => void) {
+    const molstar = getMolstar();
+
+    const sub = molstar.behaviors.state.isBusy.subscribe(() => {
+        if (!molstar) return;
+
+        callback(molstar.behaviors.state.isBusy.value);
+    });
+
+    return sub;
+}
