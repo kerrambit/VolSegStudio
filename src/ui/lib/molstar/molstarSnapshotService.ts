@@ -12,7 +12,7 @@ import { type Result } from "../../../types/Result";
 import { convertHexStringToColor } from "./utils";
 import { PluginCommands } from "molstar/lib/mol-plugin/commands";
 import { checkMolstarAfterLoading } from "./core";
-import { setMolstarReloading } from "./mvs";
+import { setMolstarReloadingView } from "./mvs";
 import { loggerUi } from "../../features/logger/services/UiLoggingService";
 
 /**
@@ -286,12 +286,14 @@ export function getCurrentSnapshotIndex(): number {
 }
 
 /**
- * Tells Molstar's snapshot manager which snapshot it should render by its index. Sets `isMolstarReloading` to `true`.
+ * Tells Molstar's snapshot manager which snapshot it should render by its index.
+ * Sets `isMolstarReloadingView` to `true` in the process of applying the snapshot.
+ * When function ends, the `isMolstarReloadingView` is reset to `false`.
  * @param index index of the snapshot
  * @returns if there is error, result with `Error` is returned, otherise null
  */
 export async function applySnapshotByIndex(index: number): Promise<Result<null>> {
-    setMolstarReloading(true);
+    setMolstarReloadingView(true);
 
     const molstar = getMolstar();
 
@@ -299,7 +301,7 @@ export async function applySnapshotByIndex(index: number): Promise<Result<null>>
     const count = entries.count();
 
     if (index < 0 || index >= count) {
-        setMolstarReloading(false);
+        setMolstarReloadingView(false);
         return {
             success: false,
             error: new Error(`Index <${index}> is out of bounds in the entries list!`),
@@ -308,7 +310,7 @@ export async function applySnapshotByIndex(index: number): Promise<Result<null>>
 
     const entry = entries.get(index);
     if (!entry || !entry.snapshot) {
-        setMolstarReloading(false);
+        setMolstarReloadingView(false);
         return {
             success: false,
             error: new Error(`Given entry on index <${index}> was not found!`),
@@ -322,13 +324,13 @@ export async function applySnapshotByIndex(index: number): Promise<Result<null>>
 
     const result = checkMolstarAfterLoading();
     if (!result.success) {
-        setMolstarReloading(false);
+        setMolstarReloadingView(false);
         return {
             success: false,
             error: result.error,
         };
     }
 
-    setMolstarReloading(false);
+    setMolstarReloadingView(false);
     return { success: true, value: null };
 }
