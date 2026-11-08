@@ -72,7 +72,7 @@ export function Views(props: ViewsProps) {
                                     handleCameraSave(index, view, camera, thumbnail)
                                 }
                                 onBackgrounColorChange={(color) =>
-                                    handleBackgroundColorChange(view, color)
+                                    handleBackgroundColorChange(index, view, color)
                                 }
                                 onTitleChange={(title) =>
                                     handleTitleChange(index, view, title)

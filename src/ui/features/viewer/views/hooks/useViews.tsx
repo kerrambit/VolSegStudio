@@ -515,7 +515,7 @@ export function useViews({
         updateSnapshotBackgroundColorInManager(index, result.canvasColor);
 
         // Update live renderer with new background color.
-        updateLiveBackgroundColor(result.canvasColor); // TODO: setBackgroundColor vs updateLiveBackgroundColor
+        updateLiveBackgroundColor(result.canvasColor);
     };
 
     const handleSelectActiveView = async (index: number, view: ViewMetadata) => {
@@ -525,7 +525,11 @@ export function useViews({
         }
     };
 
-    const handleBackgroundColorChange = (view: ViewMetadata, color: HexColor) => {
+    const handleBackgroundColorChange = (
+        index: number,
+        view: ViewMetadata,
+        color: HexColor,
+    ) => {
         // Ignore other non-viewing regime.
         if (regime.kind !== "viewing") {
             return;
@@ -553,6 +557,12 @@ export function useViews({
             updatedTree,
             `Updated background color for view "${view.title}" (${view.key}).`,
         );
+
+        // Update snapshot's background color in Molstar snapshot manager.
+        updateSnapshotBackgroundColorInManager(index, color);
+
+        // Update live renderer with new background color.
+        updateLiveBackgroundColor(color);
     };
 
     return {

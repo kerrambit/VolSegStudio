@@ -674,30 +674,7 @@ export async function loadMVSJFile(index: string): Promise<
 }
 
 /**
- * Global variable holding the information if the Molstar viewer is in the (re)loading process.
- * Do not confuse with `molstarInitializing` variable from `useMolstarInit` hook.
- */
-let _isMolstarReloadingView = false;
-
-/**
- * Retrieves information if Molstar is (re)loading view, or applying given view index (essentially again reloading of a view).
- * Can be used for example to check if the subscription to some event is made by inner Molstar action or by calling our `reloadMolstarAndRestoreIndex` or `applySnapshotByIndex` functions.
- * @returns true if reloading otherwise false
- */
-export function isMolstarReloadingView() {
-    return _isMolstarReloadingView;
-}
-
-/**
- * Sets global `isMolstarReloadingView` variable. See `isMolstarReloadingView` for more information.
- * @param isReloading state
- */
-export function setMolstarReloadingView(isReloading: boolean) {
-    _isMolstarReloadingView = isReloading;
-}
-
-/**
- * Reloads Molstar with given `updated_tree` and restore index of view. Sets `isMolstarReloadingView` to `true`.
+ * Reloads Molstar with given `updated_tree` and restore index of view.
  * @param view view which is to be selected (you can reference it using either its index or key, where index has a priority); if undefined, we call function to get index from Molstar library itself
  * @param assets assets from `ManagedAssets` manager
  * @param updatedTree updated tree
@@ -708,8 +685,6 @@ export async function reloadMolstarAndRestoreIndex(
     assets: ManagedAsset[],
     updatedTree: MVSData_States,
 ) {
-    setMolstarReloadingView(true);
-
     let currentIndex;
     if (!view) {
         currentIndex = getCurrentViewIndex();
@@ -728,15 +703,13 @@ export async function reloadMolstarAndRestoreIndex(
     const renderTree = buildRenderTreeForMolstar(updatedTree, assets);
     const result = await loadMVSIntoMolstar(renderTree, undefined, currentIndex);
 
-    setMolstarReloadingView(false);
-
     if (!result.success) {
         return result.error;
     }
 }
 
 /**
- * Loads MVS into Molstar and checks if the operation was successful. Does not set `isMolstarReloadingView`.
+ * Loads MVS into Molstar and checks if the operation was successful.
  * @param stateTree state tree to load
  * @param sourceUrl optional sourceUrl (`Base for resolving relative URLs/URIs. May itself be a relative URL (relative to the window URL)`)
  * @param currentIndex optional parameter which reloads given snapshot on the `currentIndex` index
